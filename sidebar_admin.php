@@ -34,8 +34,8 @@ $current_page = basename($_SERVER['PHP_SELF']);
         </a>
         <a href="manage_services.php" 
            class="flex items-center gap-4 px-4 py-3 rounded-sm transition-all <?= ($current_page == 'manage_services.php') ? 'bg-[#e9c176]/10 text-[#e9c176]' : 'text-gray-400 hover:bg-[#1c1b1b] hover:text-white' ?>">
-            <span class="material-symbols-outlined">box</span>
-            <span class="font-label text-sm uppercase tracking-widest">booking</span>
+            <span class="material-symbols-outlined text-sm text-primary">schedule</span>
+            <span class="font-label text-sm uppercase tracking-widest">services</span>
         </a>
 
         
