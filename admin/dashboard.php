@@ -1,10 +1,12 @@
 <?php
-include 'koneksi.php';
+include '../config/koneksi.php';
+// Mengambil sidebar dari folder includes
+include '../includes/sidebar_admin.php';
 session_start();
 
 // Proteksi: Hanya admin yang bisa masuk
 if (!isset($_SESSION['login']) || $_SESSION['role'] !== 'admin') {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit;
 }
 

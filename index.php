@@ -59,7 +59,7 @@
 
 <body class="bg-background selection:bg-primary/30 selection:text-primary overflow-x-hidden">
 
-   <?php include 'navbar.php'; ?>
+   <?php include 'includes/navbar.php'; ?>
 
     <main>
         <section class="relative h-screen flex items-center justify-center overflow-hidden">

@@ -1,5 +1,5 @@
 <?php
-include 'koneksi.php';
+include 'config/koneksi.php';
 session_start();
 
 // Ambil data galeri dari database
@@ -22,7 +22,7 @@ $result = mysqli_query($conn, $query);
 </head>
 <body class="min-h-screen">
 
-    <?php include 'navbar.php'; ?>
+    <?php include 'includes/navbar.php'; ?>
 
     <header class="max-w-7xl mx-auto px-8 py-20 text-center">
         <p class="text-[#e9c176] text-[10px] uppercase tracking-[0.3em] mb-4">Our Visual Legacy</p>

@@ -2,7 +2,7 @@
 session_start();
 session_unset();
 session_destroy();
-header("Location: login.php");
+header("Location: ../index.php");
 exit;
 ?>
 <span class="material-symbols-outlined text-[20px]">photo_library</span>

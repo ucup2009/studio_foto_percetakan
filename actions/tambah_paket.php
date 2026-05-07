@@ -74,7 +74,7 @@ if (isset($_POST['submit'])) {
                 </div>
             <?php endif; ?>
 
-            <form action="" method="POST" class="space-y-8 bg-surface-container-low p-10 border border-outline-variant/10 rounded-sm">
+            <form action="../actions/upload_proses.php" method="POST" enctype="multipart/form-data">
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="space-y-2">

@@ -1,5 +1,5 @@
 <?php
-include 'koneksi.php';
+include '../config/koneksi.php';
 session_start();
 
 // Proteksi Admin
@@ -62,7 +62,7 @@ $tampil_galeri = mysqli_query($conn, $query_galeri);
 </head>
 <body class="min-h-screen flex bg-background text-on-surface overflow-hidden">
 
-    <?php include 'sidebar_admin.php'; ?>
+    <?php include '../includes/sidebar_admin.php'; ?>
 
     <main class="flex-1 h-screen overflow-y-auto">
         <div class="max-w-7xl mx-auto p-12">

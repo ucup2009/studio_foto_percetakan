@@ -1,5 +1,5 @@
 <?php
-include 'koneksi.php';
+include '../config/koneksi.php';
 session_start();
 
 $error = "";
@@ -22,10 +22,10 @@ if (isset($_POST['login'])) {
 
             // Redirection berdasarkan role
             if ($row['role'] === 'admin') {
-                header("Location: admin_dashboard.php");
+                header("Location: ../admin/dashboard.php");
             } elseif ($row['role'] === 'fotografer') {
                 // Sesuai use case: melihat jadwal & update status
-                header("Location: fotografer_dashboard.php"); 
+               header("Location: ../fotografer/dashboard.php");
             } else {
                 header("Location: index.php");
             }

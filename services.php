@@ -1,5 +1,5 @@
 <?php
-include 'koneksi.php';
+include 'config/koneksi.php';
 
 // Ambil data paket fotografi
 $query_paket = mysqli_query($conn, "SELECT * FROM paket ORDER BY id_paket ASC");
@@ -75,8 +75,7 @@ $query_cetak = mysqli_query($conn, "SELECT * FROM layanan_cetak ORDER BY id_laya
 
 <body class="bg-surface text-on-surface-variant selection:bg-primary/30">
 
-    <?php include 'navbar.php'; ?>
-
+    <?php include 'includes/navbar.php'; ?>
     
 
     <main class="pt-40 pb-24">

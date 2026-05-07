@@ -1,6 +1,7 @@
 <?php
-// Mendapatkan nama file untuk fitur active state
-$current_page = basename($_SERVER['PHP_SELF']);
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ?>
 
 <aside class="w-72 bg-[#0e0e0e] border-r border-white/5 flex flex-col h-screen sticky top-0 shrink-0">
@@ -47,7 +48,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 </div>
                 <div>
                     <p class="font-label text-xs font-bold text-on-surface"><?= $_SESSION['nama'] ?></p>
-                    <a href="logout.php" class="font-label text-[10px] text-error hover:underline uppercase tracking-widest">Sign Out</a>
+                    <a href="../auth/logout.php" class="font-label text-[10px] text-error hover:underline uppercase tracking-widest">Sign Out</a>
                 </div>
             </div>
         </div>

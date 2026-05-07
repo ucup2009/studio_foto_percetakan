@@ -36,12 +36,12 @@ $is_logged_in = isset($_SESSION['login']) && $_SESSION['login'] === true;
                     <span class="text-on-surface-variant font-label text-[10px] tracking-widest uppercase">
                         Hi, <?= explode(' ', $_SESSION['nama'])[0] ?>
                     </span>
-                    <a href="logout.php" class="border border-primary/30 text-primary px-4 py-2 rounded-sm font-label text-[10px] tracking-[0.2em] uppercase hover:bg-primary hover:text-on-primary transition-all">
+                    <a href="auth/logout.php" class="border border-primary/30 text-primary px-4 py-2 rounded-sm font-label text-[10px] tracking-[0.2em] uppercase hover:bg-primary hover:text-on-primary transition-all">
                         Logout
                     </a>
                 </div>
             <?php else: ?>
-                <a href="login.php" class="bg-primary text-on-primary px-6 py-2 rounded-sm font-label text-[10px] tracking-[0.2em] uppercase hover:brightness-110 transition-all ml-4">
+                <a href="auth/login.php" class="bg-primary text-on-primary px-6 py-2 rounded-sm font-label text-[10px] tracking-[0.2em] uppercase hover:brightness-110 transition-all ml-4">
                     Login
                 </a>
             <?php endif; ?>
