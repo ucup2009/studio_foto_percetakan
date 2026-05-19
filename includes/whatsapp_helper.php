@@ -1,6 +1,6 @@
 <?php
 function sendWhatsApp($target, $pesan) {
-    // Masukkan Token dari Dashboard Fonnte kamu di sini
+    // Token dari Dashboard Fonnte
     $token = "bj8GBBH2WVPTqgssEwZ2"; 
 
     $curl = curl_init();

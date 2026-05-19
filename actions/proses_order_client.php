@@ -35,7 +35,7 @@ if (isset($_POST['place_order'])) {
     if (mysqli_query($conn, $query)) {
         
         // 2. LOGIKA NOTIFIKASI WHATSAPP
-        $nomor_tujuan = $user_data['no_hp']; // Pastikan di tabel user ada kolom nomor telepon
+        $nomor_tujuan = $user_data['no_hp']; 
         $total_bayar  = $layanan_data['harga'] * $jumlah;
         
         // Menyusun teks pesan dengan format yang elegan

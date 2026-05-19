@@ -10,6 +10,36 @@ if (!isset($_SESSION['login'])) {
 
 $notif = ""; 
 
+// Fungsi Helper untuk Kirim API WhatsApp
+function kirimWhatsApp($target, $pesan) {
+    
+    $token = "CxQ7iSS8Bep55J3yFfL7"; 
+
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://api.fonnte.com/send',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'POST',
+        CURLOPT_POSTFIELDS => array(
+            'target' => $target,
+            'message' => $pesan,
+            'countryCode' => '62', // otomatis handle kode negara Indonesia
+        ),
+        CURLOPT_HTTPHEADER => array(
+            "Authorization: $token"
+        ),
+    ));
+
+    $response = curl_exec($curl);
+    curl_close($curl);
+    return $response;
+}
+
 // 2. Logika Simpan Data
 if (isset($_POST['submit_booking'])) {
     $id_user = $_SESSION['id_user']; 
@@ -20,12 +50,41 @@ if (isset($_POST['submit_booking'])) {
     $catatan = mysqli_real_escape_string($conn, $_POST['catatan']);
     $status = "Menunggu"; 
 
-    // Perbaikan variabel: Menggunakan $sql agar sinkron dengan mysqli_query
+    // Ambil data nama paket untuk isi pesan WA
+    $query_nama_paket = mysqli_query($conn, "SELECT nama_paket FROM paket WHERE id_paket = '$id_paket'");
+    $data_paket = mysqli_fetch_assoc($query_nama_paket);
+    $nama_paket = ucwords($data_paket['nama_paket'] ?? 'Paket Pilihan');
+
     $sql = "INSERT INTO booking (id_user, id_paket, lokasi, tanggal, jam, catatan, status) 
             VALUES ('$id_user', '$id_paket', '$lokasi', '$tanggal', '$jam', '$catatan', '$status')";
     
     if (mysqli_query($conn, $sql)) {
         $notif = "success";
+
+        // --- SISTEM OTOMATISASI WHATSAPP ---
+        
+        // 1. Ambil nomor HP & Nama pelanggan dari sesi login atau database user
+        // Pastikan format nomor di database aman (contoh: 08123xxx atau 628123xxx)
+        $nama_pelanggan = $_SESSION['nama'] ?? 'Pelanggan';
+        $no_hp_pelanggan = $_SESSION['no_hp'] ?? ''; // Sesuaikan key session No HP di sistem Anda
+
+        // 2. Format teks template pesan profesional ala OPPASTUDIO
+        $format_tanggal = date('d M Y', strtotime($tanggal));
+        $pesan_wa = "*OPPASTUDIO | Booking Confirmation*\n\n";
+        $pesan_wa .= "Halo, *{$nama_pelanggan}*.\n\n";
+        $pesan_wa .= "Terima kasih telah mempercayakan momen berharga Anda kepada kami. Reservasi sesi foto Anda telah berhasil direkam ke dalam sistem dengan rincian berikut:\n\n";
+        $pesan_wa .= "▪️ *Paket:* {$nama_paket}\n";
+        $pesan_wa .= "▪️ *Tanggal:* {$format_tanggal}\n";
+        $pesan_wa .= "▪️ *Waktu:* {$jam} WIB\n";
+        $pesan_wa .= "▪️ *Lokasi:* {$lokasi}\n";
+        $pesan_wa .= "▪️ *Status:* Menunggu Konfirmasi\n\n";
+        $pesan_wa .= "Kurator dan tim administrasi kami akan segera meninjau jadwal Anda serta menghubungi Anda kembali untuk detail persiapan teknis pemotretan.\n\n";
+        $pesan_wa .= "_Pesan ini dikirimkan secara otomatis oleh sistem OPPASTUDIO Management Suite._";
+
+        // 3. Eksekusi pengiriman via API gateway jika nomor handphone tersedia
+        if (!empty($no_hp_pelanggan)) {
+            kirimWhatsApp($no_hp_pelanggan, $pesan_wa);
+        }
     } else {
         $notif = "error";
     }
@@ -84,7 +143,6 @@ if (isset($_POST['submit_booking'])) {
 
 <body class="bg-surface selection:bg-primary-container selection:text-on-primary-container overflow-x-hidden">
 
-   
    <?php include 'includes/navbar.php'; ?>
 
     <main class="pt-40 pb-24 px-6 md:px-12 max-w-7xl mx-auto">
@@ -121,7 +179,7 @@ if (isset($_POST['submit_booking'])) {
                 
                 <?php if($notif == "success"): ?>
                     <div class="bg-primary/20 border border-primary text-primary p-4 mb-6 text-sm relative z-20">
-                        Booking berhasil dikirim! Kurator kami akan segera menghubungi Anda.
+                        Booking berhasil dikirim! Rincian pesanan telah dikirimkan ke nomor WhatsApp Anda. Kurator kami akan segera menghubungi Anda.
                     </div>
                 <?php elseif($notif == "error"): ?>
                     <div class="bg-red-500/20 border border-red-500 text-red-200 p-4 mb-6 text-sm relative z-20">
@@ -172,7 +230,7 @@ if (isset($_POST['submit_booking'])) {
                         <div class="flex items-start gap-4 p-4 bg-primary/5 border-l-2 border-primary/30">
                             <span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">info</span>
                             <p class="font-label text-[10px] leading-relaxed tracking-wider text-on-surface-variant uppercase">
-                                Status booking Anda akan muncul sebagai "Menunggu" sampai dikonfirmasi oleh admin. Pembayaran ditangani secara manual.
+                                Status booking Anda akan muncul sebagai "Menunggu" sampai dikonfirmasi oleh admin. Notifikasi instan rincian pemesanan dikirim langsung ke WhatsApp Anda.
                             </p>
                         </div>
                         
