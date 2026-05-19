@@ -150,45 +150,60 @@ $query_cetak = mysqli_query($conn, "SELECT * FROM layanan_cetak ORDER BY id_laya
         </section>
 
         <section class="px-8 md:px-12 max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row gap-16">
-                <div class="md:w-1/3 space-y-6">
-                    <div class="flex items-center gap-4">
-                        <span class="font-label text-xs tracking-[0.3em] uppercase text-primary">02</span>
-                        <h2 class="text-3xl font-headline text-on-surface">Layanan Cetak</h2>
-                    </div>
-                    <p class="text-on-surface-variant font-body leading-relaxed opacity-70">
-                        Kami menggunakan kertas arsip berkualitas museum dan sistem tinta yang terkalibrasi untuk memastikan kenangan Anda bertahan selama beberapa generasi.
-                    </p>
-                </div>
-                
-                <div class="md:w-2/3">
+    <div class="flex flex-col md:flex-row gap-16">
+        <div class="md:w-1/3 space-y-6">
+            <div class="flex items-center gap-4">
+                <span class="font-label text-xs tracking-[0.3em] uppercase text-primary">02</span>
+                <h2 class="text-3xl font-headline text-on-surface">Layanan Cetak</h2>
+            </div>
+            <p class="text-on-surface-variant font-body leading-relaxed opacity-70">
+                Kami menggunakan kertas arsip berkualitas museum dan sistem tinta yang terkalibrasi untuk memastikan kenangan Anda bertahan selama beberapa generasi.
+            </p>
+        </div>
+        
+        <div class="md:w-2/3">
             <div class="grid grid-cols-1 divide-y divide-white/5 border border-white/5">
                 <?php while($cetak = mysqli_fetch_assoc($query_cetak)): ?>
                     <div class="bg-surface-container-low p-8 flex justify-between items-center group hover:bg-surface-container transition-all">
                         <div class="flex items-center gap-6">
                             <span class="material-symbols-outlined text-primary/40 text-4xl group-hover:text-primary transition-colors">
                                 <?php 
-                                    // Logika sederhana penentuan icon berdasarkan nama
-                                    if (stripos($cetak['nama_layanan'], 'Foto') !== false) echo 'account_box';
-                                    elseif (stripos($cetak['nama_layanan'], 'Undangan') !== false) echo 'mail';
-                                    else echo 'card_membership';
+                                    $nama = strtolower($cetak['nama_layanan']);
+                                    if (strpos($nama, 'foto') !== false) echo 'image';
+                                    elseif (strpos($nama, 'makeup') !== false || strpos($nama, 'mua') !== false) echo 'face';
+                                    elseif (strpos($nama, 'kostum') !== false || strpos($nama, 'baju') !== false) echo 'styler';
+                                    elseif (strpos($nama, 'background') !== false) echo 'wallpaper';
+                                    else echo 'auto_awesome';
                                 ?>
                             </span>
                             <div>
                                 <h4 class="text-lg font-headline text-on-surface"><?= $cetak['nama_layanan'] ?></h4>
-                                <p class="text-[10px] font-label uppercase tracking-widest text-on-surface-variant/40">
+                                <p class="text-[10px] font-label uppercase tracking-widest text-on-surface-variant/40 mt-1">
                                     <?= $cetak['deskripsi'] ?>
                                 </p>
                             </div>
                         </div>
-                        <div class="text-right">
-                            <p class="font-body text-on-surface">Rp <?= number_format($cetak['harga'], 0, ',', '.') ?></p>
-                            <p class="text-[9px] font-label text-primary uppercase tracking-tighter">
-                                <?= isset($cetak['info_tambahan']) ? $cetak['info_tambahan'] : 'Kualitas Premium' ?>
-                            </p>
+                        
+                        <div class="flex items-center gap-8">
+                            <div class="text-right">
+                                <p class="font-body text-on-surface font-bold">Rp <?= number_format($cetak['harga'], 0, ',', '.') ?></p>
+                                <p class="text-[9px] font-label text-primary uppercase tracking-tighter mt-1">
+                                    Kualitas Premium
+                                </p>
+                            </div>
+                            
+                            <a href="order_layanan.php?id_layanan=<?= $cetak['id_layanan'] ?>" 
+                               class="border border-primary/20 text-primary p-3 hover:bg-primary hover:text-black transition-all duration-300 flex items-center justify-center rounded-sm group-hover:border-primary"
+                               title="Pesan Layanan Ini">
+                                <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                            </a>
                         </div>
                     </div>
-        <?php endwhile; ?>
+                <?php endwhile; ?>
+            </div>
+        </div>
+    </div>
+</section>
     </div>
 </div>
             </div>

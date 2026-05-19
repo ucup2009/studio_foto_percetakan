@@ -1,7 +1,7 @@
 <?php
 include '../config/koneksi.php';
 // Mengambil sidebar dari folder includes
-include '../includes/sidebar_admin.php';
+
 session_start();
 
 // Proteksi: Hanya admin yang bisa masuk
@@ -107,8 +107,7 @@ if ($storage_percent > 100) $storage_percent = 100; // Cap di 100%
 
 <body class="min-h-screen flex overflow-hidden">
 
-    <?php include 'sidebar_admin.php'; ?>
-
+    <?php include '../includes/sidebar_admin.php'; ?>
     <main class="flex-1 bg-surface h-screen overflow-y-auto">
         <div class="max-w-7xl mx-auto p-12">
             

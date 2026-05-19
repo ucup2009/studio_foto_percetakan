@@ -104,7 +104,7 @@ $tampil_galeri = mysqli_query($conn, $query_galeri);
                 <span class="material-symbols-outlined">close</span>
             </button>
             <h3 class="font-headline text-2xl mb-6 text-on-surface">Upload Asset</h3>
-            <form action="upload_proses.php" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <form action="../actions/upload_proses.php" method="POST" enctype="multipart/form-data" class="space-y-6">
                 <div>
                     <label class="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">Category</label>
                     <select name="kategori" class="w-full bg-background border-none focus:ring-1 focus:ring-primary p-4 text-sm mt-2 text-white outline-none">

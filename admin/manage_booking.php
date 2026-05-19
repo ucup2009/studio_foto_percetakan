@@ -15,7 +15,7 @@ if (isset($_POST['update_status'])) {
     
     $update_query = "UPDATE booking SET status = '$status_baru' WHERE id_booking = '$id_booking'";
     mysqli_query($conn, $update_query);
-    header("Location: manage/manage_booking.php?pesan=updated");
+    header("Location: manage_booking.php?pesan=updated");
     exit;
 }
 

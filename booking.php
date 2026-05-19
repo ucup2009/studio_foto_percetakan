@@ -4,7 +4,7 @@ session_start();
 
 // 1. Proteksi Halaman
 if (!isset($_SESSION['login'])) {
-    header("Location: login.php");
+    header("Location: auth/login.php");
     exit;
 }
 
@@ -84,7 +84,8 @@ if (isset($_POST['submit_booking'])) {
 
 <body class="bg-surface selection:bg-primary-container selection:text-on-primary-container overflow-x-hidden">
 
-    <?php include 'includes/navbar.php'; ?>
+   
+   <?php include 'includes/navbar.php'; ?>
 
     <main class="pt-40 pb-24 px-6 md:px-12 max-w-7xl mx-auto">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">

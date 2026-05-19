@@ -27,7 +27,7 @@ if (isset($_POST['login'])) {
                 // Sesuai use case: melihat jadwal & update status
                header("Location: ../fotografer/dashboard.php");
             } else {
-                header("Location: index.php");
+                header("Location: ../index.php");
             }
             exit;
         } else {

@@ -1,7 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
-}
+}   
 ?>
 
 <aside class="w-72 bg-[#0e0e0e] border-r border-white/5 flex flex-col h-screen sticky top-0 shrink-0">
@@ -37,6 +37,16 @@ if (session_status() === PHP_SESSION_NONE) {
            class="flex items-center gap-4 px-4 py-3 rounded-sm transition-all <?= ($current_page == 'manage_services.php') ? 'bg-[#e9c176]/10 text-[#e9c176]' : 'text-gray-400 hover:bg-[#1c1b1b] hover:text-white' ?>">
             <span class="material-symbols-outlined text-sm text-primary">schedule</span>
             <span class="font-label text-sm uppercase tracking-widest">services</span>
+        </a>
+        <a href="manage_addons.php" 
+           class="flex items-center gap-4 px-4 py-3 rounded-sm transition-all <?= ($current_page == 'manage_services.php') ? 'bg-[#e9c176]/10 text-[#e9c176]' : 'text-gray-400 hover:bg-[#1c1b1b] hover:text-white' ?>">
+            <span class="material-symbols-outlined text-sm text-primary">schedule</span>
+            <span class="font-label text-sm uppercase tracking-widest">services</span>
+        </a>
+        <a href="manage_orders.php" 
+           class="flex items-center gap-4 px-4 py-3 rounded-sm transition-all <?= ($current_page == 'manage_orders.php') ? 'bg-[#e9c176]/10 text-[#e9c176]' : 'text-gray-400 hover:bg-[#1c1b1b] hover:text-white' ?>">
+            <span class="material-symbols-outlined">receipt_long</span>
+            <span class="font-label text-sm uppercase tracking-widest">Orders</span>
         </a>
 
         

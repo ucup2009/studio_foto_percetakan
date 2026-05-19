@@ -1,6 +1,6 @@
 <?php
 // Pastikan session sudah dimulai dan koneksi disertakan
-include 'koneksi.php';
+include '../config/koneksi.php';
 session_start();
 $query = "SELECT * FROM jadwal ORDER BY tanggal ASC"; 
 $result_jadwal = mysqli_query($conn, $query);
@@ -37,7 +37,8 @@ $result = mysqli_query($conn, $query);
 </head>
 <body class="bg-[#131313] text-[#e5e2e1] flex min-h-screen">
 
-    <?php include 'sidebar_fotografer.php'; ?>
+    
+    <?php include '../includes/sidebar_admin.php';?>
 
     <main class="flex-1 p-12">
         <header class="mb-10">
