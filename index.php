@@ -113,44 +113,70 @@
             </div>
         </section>
 
-        <section class="py-32 px-8 md:px-12 bg-surface-container-low">
-            <div class="max-w-7xl mx-auto mb-20 text-center">
-                <span class="font-label text-primary tracking-[0.3em] uppercase text-[10px] mb-4 block">Curated Works</span>
-                <h2 class="font-headline text-4xl md:text-6xl text-on-surface">The Featured Gallery</h2>
+        <section class="py-32 px-8 md:px-12 bg-[#0d0d0d] overflow-hidden min-h-screen flex flex-col justify-center relative">
+    
+            <div class="max-w-7xl mx-auto mb-12 text-center relative z-20">
+                <span class="font-label text-[#e9c176] tracking-[0.3em] uppercase text-[10px] mb-4 block">Curated Works</span>
+                <h2 class="font-headline text-4xl md:text-5xl text-white font-light">The Featured Gallery</h2>
+                <p class="text-[11px] text-zinc-500 uppercase tracking-widest mt-2 font-mono">Klik Tombol Kontrol untuk Memutar Koleksi</p>
             </div>
-            
-            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-4 auto-rows-[300px]">
-                <div class="md:col-span-4 md:row-span-2 relative group overflow-hidden border border-white/5">
-                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGzhgZDQJwTR84EEGMmuJTzVMctmwIZ6Emaq24wp_yfbrU4QH2QjQiqoyeDiQV3kYZN0RzTFU69w-pHzuu-Augak2SDokq9qxopd9T9rmcTBp26VhTjmcQM5r9ibEonMUYKMK8RZmlVaeNJrCvcu1-x22l62qb-wHEv54H29Lq7wzQXra_q7yRnpqvz2bB5fzSQUGp4jGg9vlM0gJLGWWpQPaNCTVwcBT_BO0VBPvtZiBD0DNSfL3RCqKF6PyPKxZE7z6-V1yWOyFs" alt="Wedding" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 md:opacity-0 group-hover:opacity-90 transition-opacity duration-500 flex flex-col justify-end p-8">
-                        <span class="font-label text-primary text-[10px] uppercase tracking-widest mb-2">Weddings</span>
-                        <h3 class="font-headline text-2xl text-on-surface">Eternal Unions</h3>
+
+            <div class="relative w-full max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-center gap-12 md:gap-20">
+                
+                <div class="w-full md:w-1/3 text-center md:text-left z-20 flex flex-col items-center md:items-start justify-center">
+                    <div class="w-24 h-[1px] bg-zinc-700 mb-6"></div>
+                    <h3 id="active-title" class="font-headline text-5xl md:text-6xl text-white tracking-wide font-light uppercase transition-all duration-500">
+                        Weddings
+                    </h3>
+                    <p id="active-subtitle" class="text-xs text-[#e9c176] tracking-[0.2em] uppercase mt-3 font-mono transition-all duration-500">
+                        Eternal Unions
+                    </p>
+                    <div class="w-24 h-[1px] bg-zinc-700 mt-6"></div>
+
+                    <div class="flex gap-3 mt-10">
+                        <button onclick="rotateGallery(-45)" class="w-10 h-10 rounded-full border border-white/10 hover:border-[#e9c176] flex items-center justify-center text-white text-sm hover:text-[#e9c176] transition-all bg-black/40">
+                            ←
+                        </button>
+                        <button onclick="rotateGallery(45)" class="w-10 h-10 rounded-full border border-white/10 hover:border-[#e9c176] flex items-center justify-center text-white text-sm hover:text-[#e9c176] transition-all bg-black/40">
+                            →
+                        </button>
                     </div>
                 </div>
-                <div class="md:col-span-4 md:row-span-1 relative group overflow-hidden border border-white/5">
-                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWaSYwTA4WWuHLnlyJmjrmMal4z3462PUgRkhD9RJUY9s1GoeaCdwGflyeV3cf6qM2-SfHZcACUMbPFOuLM7nXcqCSrYz137-BfjMC1Qz7Vq8-ByBLvIJTphi38HGO0Uh36sdXo84y8IvlpEO-Pr9rDtQ15T1xXA4N8K-gc29U0QLsFYprsxJcC1lSnTgGP2I0uuYzpBiZcMYnfX3hg4XlJxYxpAcxNlQ08mZYpULeJv8ZaDSE7MeRtQSjM3nNpOhKuIDok0vs7v_p" alt="Portrait" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 md:opacity-0 group-hover:opacity-90 transition-opacity duration-500 flex flex-col justify-end p-8">
-                        <span class="font-label text-primary text-[10px] uppercase tracking-widest mb-2">Portraits</span>
-                        <h3 class="font-headline text-xl text-on-surface">Character Studies</h3>
+
+                <div class="relative w-[340px] h-[340px] sm:w-[500px] sm:h-[500px] md:w-[650px] md:h-[650px] flex-shrink-0">
+                    
+                    <div class="absolute -left-[20%] top-1/2 -translate-y-1/2 w-[40%] h-[40%] bg-[#0d0d0d] rounded-full z-10 hidden md:block"></div>
+                    
+                    <div id="gallery-wheel" class="absolute inset-0 w-full h-full rounded-full border-4 border-zinc-950 bg-zinc-950 overflow-hidden transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]" style="transform: rotate(0deg);">
+                        
+                        <div onclick="setActiveInfo('Weddings', 'Eternal Unions', 0)" class="absolute inset-0 origin-center cursor-pointer group" style="clip-path: polygon(50% 50%, 100% 0, 100% 50%, 100% 100%);">
+                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGzhgZDQJwTR84EEGMmuJTzVMctmwIZ6Emaq24wp_yfbrU4QH2QjQiqoyeDiQV3kYZN0RzTFU69w-pHzuu-Augak2SDokq9qxopd9T9rmcTBp26VhTjmcQM5r9ibEonMUYKMK8RZmlVaeNJrCvcu1-x22l62qb-wHEv54H29Lq7wzQXra_q7yRnpqvz2bB5fzSQUGp4jGg9vlM0gJLGWWpQPaNCTVwcBT_BO0VBPvtZiBD0DNSfL3RCqKF6PyPKxZE7z6-V1yWOyFs" alt="Wedding" class="absolute w-[150%] h-[150%] max-w-none object-cover grayscale group-hover:grayscale-0 transition-all duration-700" style="left: -25%; top: -25%; transform: rotate(0deg);" />
+                            <div class="absolute inset-0 bg-black/30 group-hover:bg-transparent transition-colors"></div>
+                        </div>
+
+                        <div onclick="setActiveInfo('Portraits', 'Character Studies', -45)" class="absolute inset-0 origin-center cursor-pointer group" style="clip-path: polygon(50% 50%, 100% 100%, 50% 100%, 0 100%);">
+                            <img src="asset/1.jpg" alt="Portrait" class="absolute w-[150%] h-[150%] max-w-none object-cover grayscale group-hover:grayscale-0 transition-all duration-700" style="left: -25%; top: -25%; transform: rotate(-45deg);" />
+                            <div class="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors"></div>
+                        </div>
+
+                        <div onclick="setActiveInfo('Events', 'Vibrant Life', -135)" class="absolute inset-0 origin-center cursor-pointer group" style="clip-path: polygon(50% 50%, 0 100%, 0 50%, 0 0);">
+                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2nDkjjNj7bId-3U9fgE3E00vFGy4oATJqgbvvNPgyZuRjyUA03WrCa8YoXIfLxffew1FZkP5vtvuRZESArYwB-70-9_MAX20p5PDch6jZNRJlc8KXUb8cO9T7Vw48ZnaXlyzu5TdaNTnO2jG9qibQv61EJOEkv2xwNZQLr47cm0UvSqK1V2k9JiKb94a97gnit7tmiuUwRfKOPgOWFBFTCbyVJwrGNboiv8J6xEZVJLnjzCxPdwpqZAHK39MPQz7k_V9Xu4sx4uen" alt="Events" class="absolute w-[150%] h-[150%] max-w-none object-cover grayscale group-hover:grayscale-0 transition-all duration-700" style="left: -25%; top: -25%; transform: rotate(-135deg);" />
+                            <div class="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors"></div>
+                        </div>
+
+                        <div onclick="setActiveInfo('Details', 'The Nuances', -225)" class="absolute inset-0 origin-center cursor-pointer group" style="clip-path: polygon(50% 50%, 0 0, 50% 0, 100% 0);">
+                            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDd213UD_olFpwoqDTdMbTaxZ8KBOe0_0ZH5zUXF8kuv-PJCQo44d6DxKpUwR-HT2UIl07ZRoHSnMDz5aobkQepeDgt1HjUu1z_DKdtsWqKzfEfSGLxRor9u-ByWiUEppvu-f4LjdnHNQGF-EznUEANajEpnNqKk6H6Sq0cRS59EK3rQtfLcptY0mpkOKCXIALq8SgWKCuCIh9-Y_srCeE7dej7kaQDQE9sX2BX0zDACSlv52nyjPEXTupr3z-3eVEnXB7nhoc1KEoV" alt="Details" class="absolute w-[150%] h-[150%] max-w-none object-cover grayscale group-hover:grayscale-0 transition-all duration-700" style="left: -25%; top: -25%; transform: rotate(-225deg);" />
+                            <div class="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors"></div>
+                        </div>
+
                     </div>
+                    
+                    <div class="absolute inset-0 rounded-full border border-white/10 pointer-events-none z-10 m-4"></div>
+                    <div class="absolute inset-0 rounded-full border border-white/5 pointer-events-none z-10 m-16"></div>
                 </div>
-                <div class="md:col-span-4 md:row-span-1 relative group overflow-hidden border border-white/5">
-                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2nDkjjNj7bId-3U9fgE3E00vFGy4oATJqgbvvNPgyZuRjyUA03WrCa8YoXIfLxffew1FZkP5vtvuRZESArYwB-70-9_MAX20p5PDch6jZNRJlc8KXUb8cO9T7Vw48ZnaXlyzu5TdaNTnO2jG9qibQv61EJOEkv2xwNZQLr47cm0UvSqK1V2k9JiKb94a97gnit7tmiuUwRfKOPgOWFBFTCbyVJwrGNboiv8J6xEZVJLnjzCxPdwpqZAHK39MPQz7k_V9Xu4sx4uen" alt="Events" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 md:opacity-0 group-hover:opacity-90 transition-opacity duration-500 flex flex-col justify-end p-8">
-                        <span class="font-label text-primary text-[10px] uppercase tracking-widest mb-2">Events</span>
-                        <h3 class="font-headline text-xl text-on-surface">Vibrant Life</h3>
-                    </div>
-                </div>
-                <div class="md:col-span-8 md:row-span-1 relative group overflow-hidden border border-white/5">
-                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDd213UD_olFpwoqDTdMbTaxZ8KBOe0_0ZH5zUXF8kuv-PJCQo44d6DxKpUwR-HT2UIl07ZRoHSnMDz5aobkQepeDgt1HjUu1z_DKdtsWqKzfEfSGLxRor9u-ByWiUEppvu-f4LjdnHNQGF-EznUEANajEpnNqKk6H6Sq0cRS59EK3rQtfLcptY0mpkOKCXIALq8SgWKCuCIh9-Y_srCeE7dej7kaQDQE9sX2BX0zDACSlv52nyjPEXTupr3z-3eVEnXB7nhoc1KEoV" alt="Details" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80 md:opacity-0 group-hover:opacity-90 transition-opacity duration-500 flex flex-col justify-end p-8">
-                        <span class="font-label text-primary text-[10px] uppercase tracking-widest mb-2">Details</span>
-                        <h3 class="font-headline text-2xl text-on-surface">The Nuances</h3>
-                    </div>
-                </div>
+                
             </div>
         </section>
-
         <section class="py-32 px-8 bg-surface">
             <div class="max-w-4xl mx-auto bg-surface-container-lowest border border-white/5 p-12 md:p-24 text-center shadow-2xl">
                 <h2 class="font-headline text-4xl md:text-5xl text-on-surface mb-8 leading-tight">Siap untuk menentukan <br>warisan visual Anda? </h2>
@@ -232,6 +258,29 @@
     s0.parentNode.insertBefore(s1,s0);
     })();
 </script>
+<script>
+    let currentRotation = 0;
 
+    function rotateGallery(degrees) {
+        currentRotation += degrees;
+        const wheel = document.getElementById('gallery-wheel');
+        wheel.style.transform = `rotate(${currentRotation}deg)`;
+        
+        // Efek transisi halus teks judul saat roda digeser manual
+        document.getElementById('active-title').style.opacity = '0.3';
+        setTimeout(() => {
+            document.getElementById('active-title').style.opacity = '1';
+        }, 300);
+    }
+
+    function setActiveInfo(title, subtitle, targetDegrees) {
+        // Berfungsi mengubah teks ketika elemen gambar diklik langsung
+        document.getElementById('active-title').innerText = title;
+        document.getElementById('active-subtitle').innerText = subtitle;
+        
+        currentRotation = targetDegrees;
+        document.getElementById('gallery-wheel').style.transform = `rotate(${targetDegrees}deg)`;
+    }
+</script>
 </body>
 </html>

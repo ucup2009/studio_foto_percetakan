@@ -12,12 +12,13 @@ if (!isset($_SESSION['login']) || $_SESSION['role'] !== 'admin') {
 if (isset($_GET['hapus'])) {
     $id = $_GET['hapus'];
     
-    // Ambil nama file dulu untuk menghapus file fisik di folder
+    // Ambil nama file dari kolom 'foto'
     $get_file = mysqli_query($conn, "SELECT foto FROM galeri WHERE id_galeri = $id");
     $data_file = mysqli_fetch_assoc($get_file);
-    $nama_file = $data_file['gambar'];
+    $nama_file = $data_file['foto'];
     
-    if (file_exists("img/gallery/" . $nama_file)) {
+    // Hapus file fisik jika ada di dalam folder
+    if (!empty($nama_file) && file_exists("img/gallery/" . $nama_file)) {
         unlink("img/gallery/" . $nama_file);
     }
 
@@ -79,7 +80,23 @@ $tampil_galeri = mysqli_query($conn, $query_galeri);
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 <?php while($row = mysqli_fetch_assoc($tampil_galeri)): ?>
                 <div class="group relative bg-surface-container-low border border-outline-variant/10 rounded-sm overflow-hidden aspect-square">
-                    <img src="img/gallery/<?= $row['foto'] ?>" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
+                    
+                    <?php 
+                        // 1. Coba jalur langsung jika file ini berada di root folder yang sama dengan 'img'
+                        $path_gambar = "img/gallery/" . $row['foto'];
+
+                        // 2. Jika tidak ditemukan, coba jalur mundur satu tingkat (jika file ini di dalam folder seperti 'admin/')
+                        if (!file_exists($path_gambar)) {
+                            $path_gambar = "../img/gallery/" . $row['foto'];
+                        }
+
+                        // 3. Jika nama file kosong atau benar-benar tidak ada di kedua folder tersebut, berikan gambar placeholder
+                        if (empty($row['foto']) || (!file_exists($path_gambar) && !file_exists("img/gallery/" . $row['foto']))) {
+                            $path_gambar = "https://placehold.co/600x600/1c1b1b/e9c176?text=Cek+Database";
+                        }
+                    ?>
+
+                        <img src="<?= $path_gambar ?>" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" alt="Gallery Image" />
                     
                     <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-4">
                         <div class="flex justify-end">
@@ -88,8 +105,8 @@ $tampil_galeri = mysqli_query($conn, $query_galeri);
                             </a>
                         </div>
                         <div>
-                            <p class="text-[10px] text-primary uppercase font-bold tracking-widest"><?= $row['kategori'] ?></p>
-                            <p class="text-xs font-semibold truncate"><?= $row['gambar'] ?></p>
+                            <p class="text-[10px] text-primary uppercase font-bold tracking-widest"><?= htmlspecialchars($row['kategori']) ?></p>
+                            <p class="text-xs font-semibold truncate text-white/80"><?= htmlspecialchars($row['foto']) ?></p>
                         </div>
                     </div>
                 </div>
