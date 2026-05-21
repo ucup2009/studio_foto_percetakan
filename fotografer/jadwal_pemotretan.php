@@ -38,7 +38,7 @@ $result = mysqli_query($conn, $query);
 <body class="bg-[#131313] text-[#e5e2e1] flex min-h-screen">
 
     
-    <?php include '../includes/sidebar_admin.php';?>
+    <?php include '../includes/sidebar_fotografer.php';?>
 
     <main class="flex-1 p-12">
         <header class="mb-10">

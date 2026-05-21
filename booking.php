@@ -138,6 +138,24 @@ if (isset($_POST['submit_booking'])) {
         ::-webkit-scrollbar-thumb:hover { background: #e9c176; }
         input[type="date"]::-webkit-calendar-picker-indicator,
         input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(0.8); cursor: pointer; }
+        /* Styling dropdown Google Autocomplete agar menyatu dengan Dark UI */
+        .pac-container { 
+            background-color: #1c1b1b; 
+            border: 1px solid #4e4639; 
+            font-family: 'Inter', sans-serif; 
+            z-index: 9999;
+        }
+        .pac-item { 
+            border-top: 1px solid #353534; 
+            padding: 10px; 
+            color: #e5e2e1; 
+        }
+        .pac-item:hover { 
+            background-color: #0e0e0e; 
+        }
+        .pac-item-query { 
+            color: #e9c176; 
+        }
     </style>
 </head>
 
@@ -202,10 +220,15 @@ if (isset($_POST['submit_booking'])) {
                                 ?>
                             </select>
                         </div>
-                        <div class="space-y-2">
-                            <label class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase font-bold">Lokasi Pemotretan</label>
-                            <input type="text" name="lokasi" placeholder="STUDIO A / JAKARTA" required
-                                   class="w-full bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary/50 transition-all p-4 text-on-surface placeholder:text-outline-variant/30 text-sm" />
+
+                        <div class="space-y-2 flex flex-col justify-between">
+                            <div>
+                                <label class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase font-bold">Lokasi Pemotretan</label>
+                                <input type="text" id="cari-lokasi" name="lokasi" placeholder="KETIK ALAMAT ATAU PILIH TITIK DI PETA..." required
+                                    class="w-full bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary/50 transition-all p-4 text-on-surface placeholder:text-outline-variant/30 text-sm" />
+                            </div>
+                            
+                            <div id="map" class="w-full h-44 bg-surface-container-lowest mt-2 border border-white/5 rounded-sm overflow-hidden"></div>
                         </div>
                     </div>
 
@@ -223,7 +246,7 @@ if (isset($_POST['submit_booking'])) {
                     <div class="space-y-2">
                         <label class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase font-bold">Catatan Khusus</label>
                         <textarea name="catatan" placeholder="TELL US ABOUT YOUR VISION..." rows="4" 
-                                  class="w-full bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary/50 transition-all p-4 text-on-surface placeholder:text-outline-variant/30 text-sm resize-none"></textarea>
+                                class="w-full bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary/50 transition-all p-4 text-on-surface placeholder:text-outline-variant/30 text-sm resize-none"></textarea>
                     </div>
 
                     <div class="pt-4 space-y-6">
@@ -280,7 +303,7 @@ if (isset($_POST['submit_booking'])) {
                 </div>
                 <div class="space-y-4">
                     <a href="#" class="block font-label text-[10px] tracking-widest uppercase text-on-surface-variant/60 hover:text-primary transition-colors">Contact</a>
-                    <a href="#" class="block font-label text-[10px] tracking-widest uppercase text-on-surface-variant/60 hover:text-primary transition-colors">Studio</a>
+                    <a href="https://maps.app.goo.gl/Gy1QxXtdCbkTo27R7" class="block font-label text-[10px] tracking-widest uppercase text-on-surface-variant/60 hover:text-primary transition-colors">Studio</a>
                 </div>
             </div>
 
@@ -305,5 +328,63 @@ if (isset($_POST['submit_booking'])) {
             });
         }
     </script>
+    <script>
+function initMap() {
+    // Tentukan titik koordinat pusat awal saat peta dimuat (Contoh: Jakarta)
+    const defaultCoords = { lat: -6.2088, lng: 106.8456 }; 
+    
+    // Inisialisasi Peta
+    const map = new google.maps.Map(document.getElementById("map"), {
+        center: defaultCoords,
+        zoom: 13,
+        disableDefaultUI: true, // Menyembunyikan tombol UI default agar minimalis
+        zoomControl: true,
+        styles: [
+            // Kustomisasi palet warna peta tema gelap
+            { "elementType": "geometry", "stylers": [{ "color": "#1c1b1b" }] },
+            { "elementType": "labels.text.stroke", "stylers": [{ "color": "#131313" }] },
+            { "elementType": "labels.text.fill", "stylers": [{ "color": "#e5e2e1" }] },
+            { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#353534" }] },
+            { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#0e0e0e" }] }
+        ]
+    });
+
+    // Membuat penanda/pin di peta yang dapat digeser manual
+    const marker = new google.maps.Marker({
+        position: defaultCoords,
+        map: map,
+        draggable: true
+    });
+
+    // Menghubungkan kolom input text pencarian dengan library Autocomplete Google Places
+    const input = document.getElementById("cari-lokasi");
+    const autocomplete = new google.maps.places.Autocomplete(input);
+    autocomplete.bindTo("bounds", map);
+
+    // Kejadian saat pelanggan memilih salah satu saran alamat dari Google
+    autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        if (!place.geometry || !place.geometry.location) return;
+
+        if (place.geometry.viewport) {
+            map.fitBounds(place.geometry.viewport);
+        } else {
+            map.setCenter(place.geometry.location);
+            map.setZoom(17);
+        }
+        marker.setPosition(place.geometry.location);
+        input.value = place.formatted_address; // Isi input teks dengan alamat lengkap terformat
+    });
+
+    // Kejadian saat pelanggan menggeser pin merah secara manual di peta
+    marker.addListener("dragend", () => {
+        const position = marker.getPosition();
+        // Memasukkan nilai koordinat Latitude & Longitude ke dalam kolom input teks agar tersimpan di database
+        input.value = position.lat() + ", " + position.lng();
+    });
+}
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap" async defer></script>
 </body>
 </html>

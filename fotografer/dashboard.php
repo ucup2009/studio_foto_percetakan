@@ -47,7 +47,7 @@ $count_done = mysqli_num_rows(mysqli_query($conn, "SELECT id_jadwal FROM jadwal 
 </head>
 <body class="flex min-h-screen">
 
-    <?php include 'sidebar_fotografer.php'; ?>
+    <?php include '../includes/sidebar_fotografer.php'; ?>
 
     <main class="flex-1 p-12 overflow-y-auto">
         <header class="mb-12 flex justify-between items-end">

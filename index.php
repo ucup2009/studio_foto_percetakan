@@ -125,11 +125,12 @@
                 
                 <div class="w-full md:w-1/3 text-center md:text-left z-20 flex flex-col items-center md:items-start justify-center">
                     <div class="w-24 h-[1px] bg-zinc-700 mb-6"></div>
-                    <h3 id="active-title" class="font-headline text-5xl md:text-6xl text-white tracking-wide font-light uppercase transition-all duration-500">
+                    <h3 id="class=text-xs text-[#e9c176] tracking-[0.2em] uppercase mt-3 font-mono transition-all duration-500">
                         Weddings
                     </h3>
-                    <p id="active-subtitle" class="text-xs text-[#e9c176] tracking-[0.2em] uppercase mt-3 font-mono transition-all duration-500">
+                    <p id=" active-title" class="font-headline text-5xl md:text-6xl text-white tracking-wide font-light uppercase transition-all duration-500">
                         Eternal Unions
+                       
                     </p>
                     <div class="w-24 h-[1px] bg-zinc-700 mt-6"></div>
 

@@ -57,7 +57,7 @@ if (isset($_POST['login'])) {
         
         <div class="flex flex-col items-center mb-10">
             <div class="w-20 h-20 mb-4 rounded-full overflow-hidden border-2 border-[#e9c176]/30 p-1">
-                <img src="asset/logo.jpeg" alt="Logo OPPASTUDIO" class="w-full h-full object-cover rounded-full">
+                <img src="../asset/logo.jpeg" alt="Logo OPPASTUDIO" class="w-full h-full object-cover rounded-full">
             </div>
             <h2 class="font-headline text-3xl text-[#e9c176] tracking-widest uppercase">OPPASTUDIO</h2>
             <p class="text-[10px] tracking-[0.4em] text-gray-500 uppercase mt-2">Visual Legacy</p>

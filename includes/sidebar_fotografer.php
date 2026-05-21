@@ -30,7 +30,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 </div>
                 <div>
                     <p class="font-label text-xs font-bold text-on-surface"><?= $_SESSION['nama'] ?></p>
-                    <a href="logout.php" class="font-label text-[10px] text-error hover:underline uppercase tracking-widest">Sign Out</a>
+                    <a href="../auth/logout.php" class="font-label text-[10px] text-error hover:underline uppercase tracking-widest">Sign Out</a>
                 </div>
             </div>
         </div>

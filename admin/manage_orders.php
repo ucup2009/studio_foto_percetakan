@@ -32,6 +32,18 @@ $query = "SELECT p.*, u.nama, l.nama_layanan, l.harga
           JOIN layanan_cetak l ON p.id_layanan = l.id_layanan
           ORDER BY p.tanggal_pesan DESC";
 $result = mysqli_query($conn, $query);
+if (isset($_POST['delete_order'])) {
+    $id_pesanan = mysqli_real_escape_string($conn, $_POST['id_pesanan']);
+    
+    // Jalankan query hapus data
+    $query_delete = mysqli_query($conn, "DELETE FROM pesanan_cetak WHERE id_pesanan = '$id_pesanan'");
+    
+    if ($query_delete) {
+        echo "<script>alert('Pesanan berhasil dihapus!'); window.location.href=window.location.href;</script>";
+    } else {
+        echo "<script>alert('Gagal menghapus pesanan: " . mysqli_error($conn) . "');</script>";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -83,7 +95,7 @@ $result = mysqli_query($conn, $query);
                             <th class="px-6 py-4 text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-white/5 font-body">
+                   <tbody class="divide-y divide-white/5 font-body">
                         <?php if(mysqli_num_rows($result) > 0): ?>
                             <?php while($row = mysqli_fetch_assoc($result)): ?>
                             <tr class="hover:bg-white/[0.01] transition-all">
@@ -125,13 +137,22 @@ $result = mysqli_query($conn, $query);
                                 <td class="px-6 py-5 text-right">
                                     <form action="" method="POST" class="flex items-center justify-end gap-2">
                                         <input type="hidden" name="id_pesanan" value="<?= $row['id_pesanan'] ?>">
+                                        
                                         <select name="status" class="bg-[#0e0e0e] border border-white/5 text-gray-400 text-[10px] p-2 rounded-sm outline-none focus:border-primary/50 transition-colors uppercase font-bold tracking-wider">
                                             <option value="menunggu" <?= ($row['status'] == 'menunggu') ? 'selected' : '' ?>>Menunggu</option>
                                             <option value="diproses" <?= ($row['status'] == 'diproses') ? 'selected' : '' ?>>Diproses</option>
                                             <option value="selesai" <?= ($row['status'] == 'selesai') ? 'selected' : '' ?>>Selesai</option>
                                         </select>
+                                        
                                         <button type="submit" name="update_status" class="bg-primary/10 text-primary border border-primary/20 hover:bg-primary hover:text-black p-2 rounded-sm transition-all" title="Update Status">
                                             <span class="material-symbols-outlined text-xs block">check</span>
+                                        </button>
+
+                                        <button type="submit" name="delete_order" 
+                                                class="bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500 hover:text-white p-2 rounded-sm transition-all" 
+                                                onclick="return confirm('Apakah Anda yakin ingin menghapus pesanan dari <?= addslashes($row['nama']) ?>? Data yang dihapus tidak dapat dikembalikan.');"
+                                                title="Hapus Pesanan">
+                                            <span class="material-symbols-outlined text-xs block">delete</span>
                                         </button>
                                     </form>
                                 </td>
