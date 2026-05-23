@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 23, 2026 at 02:40 AM
+-- Generation Time: May 23, 2026 at 05:39 AM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.16
 
@@ -44,10 +44,8 @@ CREATE TABLE `booking` (
 --
 
 INSERT INTO `booking` (`id_booking`, `id_user`, `id_paket`, `id_fotografer`, `tanggal`, `jam`, `lokasi`, `catatan`, `status`) VALUES
-(25, 10, 1, 11, '2026-04-30', '12:00:00', 'rrrer', 'er', 'menunggu'),
-(26, 10, 1, 11, '2026-04-30', '12:00:00', 'rrrer', 'er', 'menunggu'),
-(27, 10, 1, 2, '2026-05-11', '14:58:00', 'wdwfef', 'efvcc  ffef', 'menunggu'),
-(28, 10, 6, 3, '2026-05-31', '09:10:00', 'wdw ', 'wfd wfwfc cfe ', 'menunggu');
+(31, 10, 1, 2, '2026-05-05', '13:36:00', '', 'df', 'menunggu'),
+(33, 10, 5, 3, '2026-06-01', '20:40:00', '', 'cdv dvdv', 'menunggu');
 
 -- --------------------------------------------------------
 
@@ -117,8 +115,8 @@ CREATE TABLE `jadwal` (
 --
 
 INSERT INTO `jadwal` (`id_jadwal`, `id_booking`, `id_fotografer`, `tanggal`, `jam`, `status`) VALUES
-(5, 27, 2, '2026-05-11', '14:58:00', 'terjadwal'),
-(6, 28, 3, '2026-05-31', '09:10:00', 'terjadwal');
+(9, 31, 2, '2026-05-05', '13:36:00', 'terjadwal'),
+(11, 33, 3, '2026-06-01', '20:40:00', 'terjadwal');
 
 -- --------------------------------------------------------
 
@@ -210,8 +208,6 @@ CREATE TABLE `pesanan_cetak` (
 
 INSERT INTO `pesanan_cetak` (`id_pesanan`, `id_user`, `id_layanan`, `jumlah`, `file_desain`, `catatan`, `tanggal_pesan`, `status`) VALUES
 (2, 2, 1, 1, '6a0bae69a36b0.JPG', 'wgthgtrhgt', '2026-05-19', 'selesai'),
-(15, 1, 1, 1, '6a0c01369e254.jpg', '1 lembart', '2026-05-19', 'selesai'),
-(16, 10, 3, 1, '6a0c5186bcc1e.CR3', 'edwd', '2026-05-19', 'selesai'),
 (18, 1, 1, 1, '6a0d50a34a03b.JPG', 'fgreg', '2026-05-20', 'selesai');
 
 -- --------------------------------------------------------
@@ -318,7 +314,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `booking`
 --
 ALTER TABLE `booking`
-  MODIFY `id_booking` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id_booking` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `fotografer`
@@ -336,7 +332,7 @@ ALTER TABLE `galeri`
 -- AUTO_INCREMENT for table `jadwal`
 --
 ALTER TABLE `jadwal`
-  MODIFY `id_jadwal` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_jadwal` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `layanan_cetak`
@@ -389,7 +385,7 @@ ALTER TABLE `fotografer`
 -- Constraints for table `jadwal`
 --
 ALTER TABLE `jadwal`
-  ADD CONSTRAINT `jadwal_ibfk_1` FOREIGN KEY (`id_booking`) REFERENCES `booking` (`id_booking`),
+  ADD CONSTRAINT `jadwal_ibfk_1` FOREIGN KEY (`id_booking`) REFERENCES `booking` (`id_booking`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `jadwal_ibfk_2` FOREIGN KEY (`id_fotografer`) REFERENCES `fotografer` (`id_fotografer`);
 
 --

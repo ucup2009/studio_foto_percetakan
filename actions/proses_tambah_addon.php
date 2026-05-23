@@ -15,7 +15,7 @@ if (isset($_POST['submit'])) {
     $deskripsi    = mysqli_real_escape_string($conn, $_POST['deskripsi']);
 
     // Query INSERT sesuai dengan kolom di phpMyAdmin kamu
-    $query = "INSERT INTO layanan (nama_layanan, harga, deskripsi) 
+    $query = "INSERT INTO layanan_cetak (nama_layanan, harga, deskripsi) 
               VALUES ('$nama_layanan', '$harga', '$deskripsi')";
 
     if (mysqli_query($conn, $query)) {

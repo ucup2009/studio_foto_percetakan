@@ -10,10 +10,10 @@ if (!isset($_SESSION['login']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
 
-// Nama tabel transaksi/pesanan kamu (sesuaikan jika namanya berbeda di phpMyAdmin)
+// Nama tabel transaksi/pesanan kamu
 $tabel_pesanan = 'pesanan_cetak'; 
 
-// LOGIKA UPDATE STATUS (Jika admin mengubah status pesanan)
+// LOGIKA UPDATE STATUS
 if (isset($_POST['update_status'])) {
     $id_pesanan = mysqli_real_escape_string($conn, $_POST['id_pesanan']);
     $status_baru = mysqli_real_escape_string($conn, $_POST['status']);
@@ -25,25 +25,47 @@ if (isset($_POST['update_status'])) {
     }
 }
 
-// QUERY AMBIL DATA (Menggabungkan dengan tabel user dan layanan agar infonya lengkap)
-$query = "SELECT p.*, u.nama, l.nama_layanan, l.harga 
-          FROM $tabel_pesanan p
-          JOIN users u ON p.id_user = u.id_user
-          JOIN layanan_cetak l ON p.id_layanan = l.id_layanan
-          ORDER BY p.tanggal_pesan DESC";
-$result = mysqli_query($conn, $query);
+// LOGIKA HAPUS PESANAN
 if (isset($_POST['delete_order'])) {
     $id_pesanan = mysqli_real_escape_string($conn, $_POST['id_pesanan']);
     
-    // Jalankan query hapus data
     $query_delete = mysqli_query($conn, "DELETE FROM pesanan_cetak WHERE id_pesanan = '$id_pesanan'");
-    
     if ($query_delete) {
-        echo "<script>alert('Pesanan berhasil dihapus!'); window.location.href=window.location.href;</script>";
+        echo "<script>alert('Pesanan berhasil dihapus!'); window.location='manage_orders.php';</script>";
+        exit;
     } else {
         echo "<script>alert('Gagal menghapus pesanan: " . mysqli_error($conn) . "');</script>";
     }
 }
+
+// Tangkap Parameter Pencarian dan Filter
+$search = isset($_GET['search']) ? mysqli_real_escape_string($conn, $_GET['search']) : '';
+$filter_status = isset($_GET['status_filter']) ? mysqli_real_escape_string($conn, $_GET['status_filter']) : '';
+
+// MEMBANGUN KONDISI SQL (WHERE CLAUSE)
+$where_clauses = [];
+
+if (!empty($search)) {
+    $where_clauses[] = "(u.nama LIKE '%$search%' OR l.nama_layanan LIKE '%$search%')";
+}
+
+if (!empty($filter_status)) {
+    $where_clauses[] = "p.status = '$filter_status'";
+}
+
+$where_sql = "";
+if (count($where_clauses) > 0) {
+    $where_sql = "WHERE " . implode(' AND ', $where_clauses);
+}
+
+// QUERY AMBIL DATA YANG DI-FILTER
+$query = "SELECT p.*, u.nama, l.nama_layanan, l.harga 
+          FROM $tabel_pesanan p
+          JOIN users u ON p.id_user = u.id_user
+          JOIN layanan_cetak l ON p.id_layanan = l.id_layanan
+          $where_sql
+          ORDER BY p.tanggal_pesan DESC";
+$result = mysqli_query($conn, $query);
 ?>
 
 <!DOCTYPE html>
@@ -64,6 +86,8 @@ if (isset($_POST['delete_order'])) {
                         "primary": "#e9c176",
                         "surface": "#0e0e0e",
                         "surface-container": "#131313",
+                        "surface-container-low": "#1c1b1b",
+                        "outline-variant": "#4e4639",
                     },
                     fontFamily: { "headline": ["Noto Serif"], "body": ["Inter"], "label": ["Manrope"] }
                 }
@@ -82,6 +106,37 @@ if (isset($_POST['delete_order'])) {
                 <h2 class="font-headline text-4xl font-bold text-white mb-2">Layanan Cetak Orders</h2>
                 <p class="text-gray-500 text-sm">Pantau berkas foto masuk, cetakan, dan instruksi khusus dari klien.</p>
             </header>
+
+            <div class="mb-8 bg-surface-container border border-white/5 p-6 rounded-sm">
+                <form method="GET" action="" class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                    <div class="w-full md:w-1/2 relative">
+                        <span class="material-symbols-outlined absolute left-4 top-3 text-gray-600 text-lg">search</span>
+                        <input type="text" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Cari nama klien atau layanan..." 
+                               class="w-full bg-[#0e0e0e] border border-white/5 focus:border-primary/50 text-xs uppercase tracking-widest p-3 pl-12 text-white placeholder:text-gray-700 outline-none transition-all rounded-sm">
+                    </div>
+                    
+                    <div class="w-full md:w-auto flex flex-col md:flex-row gap-4 items-stretch md:items-center">
+                        <div class="relative min-w-[160px]">
+                            <select name="status_filter" class="w-full bg-[#0e0e0e] border border-white/5 text-xs font-bold tracking-widest uppercase p-3 text-gray-400 rounded-sm outline-none cursor-pointer focus:border-primary/50">
+                                <option value="">— ALL STATUS —</option>
+                                <option value="menunggu" <?= $filter_status == 'menunggu' ? 'selected' : '' ?>>Menunggu</option>
+                                <option value="diproses" <?= $filter_status == 'diproses' ? 'selected' : '' ?>>Diproses</option>
+                                <option value="selesai"  <?= $filter_status == 'selesai' ? 'selected' : '' ?>>Selesai</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="bg-primary text-black font-label text-[10px] font-bold tracking-widest uppercase px-6 py-3.5 rounded-sm hover:brightness-110 transition-all flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-sm">filter_alt</span> Filter
+                        </button>
+
+                        <?php if(!empty($search) || !empty($filter_status)): ?>
+                            <a href="manage_orders.php" class="border border-white/5 text-gray-400 font-label text-[10px] font-bold tracking-widest uppercase px-6 py-3.5 rounded-sm hover:bg-[#1c1b1b] transition-all flex items-center justify-center">
+                                Reset
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </form>
+            </div>
 
             <div class="bg-surface-container border border-white/5 rounded-sm shadow-2xl overflow-hidden">
                 <table class="w-full text-left border-collapse text-xs uppercase tracking-widest">
@@ -161,7 +216,7 @@ if (isset($_POST['delete_order'])) {
                         <?php else: ?>
                             <tr>
                                 <td colspan="6" class="p-12 text-center text-sm text-gray-600 italic uppercase tracking-widest">
-                                    Belum ada pesanan layanan tambahan masuk.
+                                    Tidak ada data pesanan yang cocok atau ditemukan.
                                 </td>
                             </tr>
                         <?php endif; ?>

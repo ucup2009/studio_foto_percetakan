@@ -16,7 +16,7 @@ function kirimWhatsApp($target, $pesan) {
 
     $curl = curl_init();
     curl_setopt_array($curl, array(
-        CURL_URL => 'https://api.fonnte.com/send',
+        CURLOPT_URL => 'https://api.fonnte.com/send',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
@@ -41,22 +41,16 @@ function kirimWhatsApp($target, $pesan) {
 
 // 2. Logika Simpan Data
 // 2. Logika Simpan Data
-// 2. Logika Simpan Data
-// 2. Logika Simpan Data
-// 2. Logika Simpan Data
-// 2. Logika Simpan Data
-// 2. Logika Simpan Data
 if (isset($_POST['submit_booking'])) {
     $id_user = $_SESSION['id_user']; 
-    $id_paket = mysqli_real_escape_string($conn, $_POST['id_paket']);
     
-    // Sekarang ini sudah berisi id_fotografer asli yang valid dari form HTML
-    $id_fotografer = mysqli_real_escape_string($conn, $_POST['id_fotografer']); 
-    
-    $tanggal = mysqli_real_escape_string($conn, $_POST['tanggal']);
-    $jam = mysqli_real_escape_string($conn, $_POST['jam']);
-    $lokasi = mysqli_real_escape_string($conn, $_POST['lokasi']);
-    $catatan = mysqli_real_escape_string($conn, $_POST['catatan']);
+    // Gunakan null coalescing operator (?? '') agar jika null, otomatis diubah jadi string kosong
+    $id_paket      = mysqli_real_escape_string($conn, $_POST['id_paket'] ?? '');
+    $id_fotografer = mysqli_real_escape_string($conn, $_POST['id_fotografer'] ?? ''); 
+    $tanggal       = mysqli_real_escape_string($conn, $_POST['tanggal'] ?? '');
+    $jam           = mysqli_real_escape_string($conn, $_POST['jam'] ?? '');
+    $lokasi        = mysqli_real_escape_string($conn, $_POST['lokasi'] ?? '');
+    $catatan       = mysqli_real_escape_string($conn, $_POST['catatan'] ?? '');
     
     // Status ENUM yang sudah diselaraskan dengan database Anda
     $status_booking = "menunggu";  // Sesuai enum tabel booking
@@ -72,7 +66,7 @@ if (isset($_POST['submit_booking'])) {
     $data_foto = mysqli_fetch_assoc($query_nama_foto);
     $nama_fotografer = ucwords($data_foto['nama'] ?? 'Fotografer');
 
-    // 1. Masukkan data ke tabel booking (id_fotografer tidak akan NULL lagi)
+    // 1. Masukkan data ke tabel booking
     $sql = "INSERT INTO booking (id_user, id_paket, id_fotografer, lokasi, tanggal, jam, catatan, status) 
             VALUES ('$id_user', '$id_paket', '$id_fotografer', '$lokasi', '$tanggal', '$jam', '$catatan', '$status_booking')";
     
@@ -80,7 +74,7 @@ if (isset($_POST['submit_booking'])) {
         // 2. Ambil id_booking yang baru saja digenerate oleh sistem
         $id_booking_baru = mysqli_insert_id($conn);
 
-        // 3. Masukkan ke tabel jadwal (Aman dari Foreign Key Constraint)
+        // 3. Masukkan ke tabel jadwal
         $sql_jadwal = "INSERT INTO jadwal (id_booking, id_fotografer, tanggal, jam, status) 
                        VALUES ('$id_booking_baru', '$id_fotografer', '$tanggal', '$jam', '$status_jadwal')";
         
@@ -206,7 +200,7 @@ if (isset($_POST['submit_booking'])) {
                     </div>
                     <div class="absolute -bottom-6 -right-6 bg-surface-container-lowest p-8 border-l-4 border-primary shadow-2xl">
                         <p class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase mb-1">Next Availability</p>
-                        <p class="font-headline text-2xl text-primary font-bold">OCT 2024</p>
+                        <p class="font-headline text-2xl text-primary font-bold">OCT 2026</p>
                     </div>
                 </div>
             </div>
@@ -243,12 +237,12 @@ if (isset($_POST['submit_booking'])) {
                             </select>
                         </div>
 
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-400 mb-2">Pilih Fotografer / Visual Artist</label>
-                            <select name="id_fotografer" required class="w-full bg-[#1c1b1b] border border-white/10 p-3 text-sm rounded-sm text-white focus:ring-1 focus:ring-[#e9c176] outline-none">
-                                <option value="">-- Pilih Fotografer --</option>
+                        <div class="space-y-2">
+                            <label class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase font-bold">Pilih Fotografer / Visual Artist</label>
+                            <select name="id_fotografer" required class="w-full bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary/50 transition-all p-4 text-on-surface text-sm appearance-none">
+                                <option value="" disabled selected>— SELECT ARTIST —</option>
                                 <?php
-                                // Mengambil data fotografer dengan validasi role 'fotografer' dari tabel users
+                                // Hanya mengambil fotografer dari database dengan role 'fotografer'
                                 $query_select_foto = mysqli_query($conn, "SELECT f.id_fotografer, u.nama 
                                                                         FROM fotografer f 
                                                                         JOIN users u ON f.id_user = u.id_user 
@@ -334,7 +328,7 @@ if (isset($_POST['submit_booking'])) {
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-16 items-start">
             <div class="space-y-6">
                 <span class="text-2xl font-headline text-primary font-bold">OPPASTUDIO</span>
-                <p class="font-label text-[10px] tracking-widest uppercase text-on-surface-variant/50">© 2024 OPPASTUDIO. <br>All Rights Reserved.</p>
+                <p class="font-label text-[10px] tracking-widest uppercase text-on-surface-variant/50">© 2026 OPPASTUDIO. <br>All Rights Reserved.</p>
             </div>
             
             <div class="grid grid-cols-2 gap-4">
@@ -370,53 +364,53 @@ if (isset($_POST['submit_booking'])) {
         }
     </script>
     <script>
-function initMap() {
-    const defaultCoords = { lat: -6.2088, lng: 106.8456 }; 
-    
-    const map = new google.maps.Map(document.getElementById("map"), {
-        center: defaultCoords,
-        zoom: 13,
-        disableDefaultUI: true, 
-        zoomControl: true,
-        styles: [
-            { "elementType": "geometry", "stylers": [{ "color": "#1c1b1b" }] },
-            { "elementType": "labels.text.stroke", "stylers": [{ "color": "#131313" }] },
-            { "elementType": "labels.text.fill", "stylers": [{ "color": "#e5e2e1" }] },
-            { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#353534" }] },
-            { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#0e0e0e" }] }
-        ]
-    });
+    function initMap() {
+        const defaultCoords = { lat: -6.2088, lng: 106.8456 }; 
+        
+        const map = new google.maps.Map(document.getElementById("map"), {
+            center: defaultCoords,
+            zoom: 13,
+            disableDefaultUI: true, 
+            zoomControl: true,
+            styles: [
+                { "elementType": "geometry", "stylers": [{ "color": "#1c1b1b" }] },
+                { "elementType": "labels.text.stroke", "stylers": [{ "color": "#131313" }] },
+                { "elementType": "labels.text.fill", "stylers": [{ "color": "#e5e2e1" }] },
+                { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#353534" }] },
+                { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#0e0e0e" }] }
+            ]
+        });
 
-    const marker = new google.maps.Marker({
-        position: defaultCoords,
-        map: map,
-        draggable: true
-    });
+        const marker = new google.maps.Marker({
+            position: defaultCoords,
+            map: map,
+            draggable: true
+        });
 
-    const input = document.getElementById("cari-lokasi");
-    autocomplete.bindTo("bounds", map);
+        const input = document.getElementById("cari-lokasi");
+        const autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.bindTo("bounds", map);
 
-    autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
-        if (!place.geometry || !place.geometry.location) return;
+        autocomplete.addListener("place_changed", () => {
+            const place = autocomplete.getPlace();
+            if (!place.geometry || !place.geometry.location) return;
 
-        if (place.geometry.viewport) {
-            map.fitBounds(place.geometry.viewport);
-        } else {
-            map.setCenter(place.geometry.location);
-            map.setZoom(17);
-        }
-        marker.setPosition(place.geometry.location);
-        input.value = place.formatted_address; 
-    });
+            if (place.geometry.viewport) {
+                map.fitBounds(place.geometry.viewport);
+            } else {
+                map.setCenter(place.geometry.location);
+                map.setZoom(17);
+            }
+            marker.setPosition(place.geometry.location);
+            input.value = place.formatted_address; 
+        });
 
-    marker.addListener("dragend", () => {
-        const position = marker.getPosition();
-        input.value = position.lat() + ", " + position.lng();
-    });
-}
-</script>
-
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap" async defer></script>
+        marker.addListener("dragend", () => {
+            const position = marker.getPosition();
+            input.value = position.lat() + ", " + position.lng();
+        });
+    }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap" async defer></script>
 </body>
 </html>

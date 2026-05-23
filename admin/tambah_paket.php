@@ -10,10 +10,10 @@ if (!isset($_SESSION['login']) || $_SESSION['role'] !== 'admin') {
 
 // Logika Tambah Data
 if (isset($_POST['submit'])) {
-    $nama_paket = mysqli_real_escape_string($conn, $_POST['nama_paket']);
-    $harga      = mysqli_real_escape_string($conn, $_POST['harga']);
-    $durasi     = mysqli_real_escape_string($conn, $_POST['durasi']);
-    $deskripsi  = mysqli_real_escape_string($conn, $_POST['deskripsi']);
+    $nama_paket = mysqli_real_escape_string($conn, $_POST['nama_paket'] ?? '');
+    $harga      = mysqli_real_escape_string($conn, $_POST['harga'] ?? '');
+    $durasi     = mysqli_real_escape_string($conn, $_POST['durasi'] ?? '');
+    $deskripsi  = mysqli_real_escape_string($conn, $_POST['deskripsi'] ?? '');
 
     $query = "INSERT INTO paket (nama_paket, harga, durasi, deskripsi) 
               VALUES ('$nama_paket', '$harga', '$durasi', '$deskripsi')";
@@ -56,6 +56,7 @@ if (isset($_POST['submit'])) {
 <body class="min-h-screen flex bg-surface text-on-surface overflow-hidden">
 
     <?php include '../includes/sidebar_admin.php'; ?>
+    
     <main class="flex-1 h-screen overflow-y-auto">
         <div class="max-w-3xl mx-auto p-12">
             
@@ -73,38 +74,38 @@ if (isset($_POST['submit'])) {
                 </div>
             <?php endif; ?>
 
-            <form action="../actions/upload_proses.php" method="POST" enctype="multipart/form-data">
+            <form action="" method="POST" class="space-y-6">
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="space-y-2">
                         <label class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Package Name</label>
                         <input type="text" name="nama_paket" placeholder="e.g. Wedding Cinematic" required
-                               class="w-full bg-surface border-none focus:ring-1 focus:ring-primary p-4 text-sm text-white placeholder:text-gray-700 outline-none">
+                               class="w-full bg-surface-container-low border border-white/5 focus:border-primary focus:ring-0 p-4 text-sm text-white placeholder:text-gray-700 outline-none transition-all">
                     </div>
 
                     <div class="space-y-2">
                         <label class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Price (IDR)</label>
                         <input type="number" name="harga" placeholder="e.g. 1500000" required
-                               class="w-full bg-surface border-none focus:ring-1 focus:ring-primary p-4 text-sm text-white placeholder:text-gray-700 outline-none">
+                               class="w-full bg-surface-container-low border border-white/5 focus:border-primary focus:ring-0 p-4 text-sm text-white placeholder:text-gray-700 outline-none transition-all">
                     </div>
                 </div>
 
                 <div class="space-y-2">
                     <label class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Duration (Minutes)</label>
                     <input type="number" name="durasi" placeholder="e.g. 60" required
-                           class="w-full bg-surface border-none focus:ring-1 focus:ring-primary p-4 text-sm text-white placeholder:text-gray-700 outline-none">
+                           class="w-full bg-surface-container-low border border-white/5 focus:border-primary focus:ring-0 p-4 text-sm text-white placeholder:text-gray-700 outline-none transition-all">
                 </div>
 
                 <div class="space-y-2">
                     <label class="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Description / Features</label>
                     <textarea name="deskripsi" rows="5" placeholder="e.g. 2 Locations, 20 Edited Photos, All RAW Files included..." required
-                              class="w-full bg-surface border-none focus:ring-1 focus:ring-primary p-4 text-sm text-white placeholder:text-gray-700 outline-none resize-none"></textarea>
+                              class="w-full bg-surface-container-low border border-white/5 focus:border-primary focus:ring-0 p-4 text-sm text-white placeholder:text-gray-700 outline-none resize-none transition-all"></textarea>
                     <p class="text-[10px] text-gray-600 italic">Gunakan koma (,) untuk memisahkan fitur agar mudah dibaca.</p>
                 </div>
 
                 <div class="pt-4">
                     <button type="submit" name="submit" 
-                            class="w-full bg-primary text-black font-label text-[10px] font-bold tracking-widest uppercase py-5 rounded-sm hover:brightness-110 transition-all">
+                            class="w-full bg-primary text-black font-label text-[10px] font-bold tracking-widest uppercase py-5 rounded-sm hover:brightness-110 transition-all shadow-lg shadow-primary/10">
                         Publish Service Package
                     </button>
                 </div>
@@ -113,4 +114,4 @@ if (isset($_POST['submit'])) {
         </div>
     </main>
 </body>
-</html>     
+</html>
