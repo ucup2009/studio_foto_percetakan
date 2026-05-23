@@ -24,9 +24,23 @@ $query = "SELECT j.id_jadwal, j.tanggal, j.jam, j.status,
 
 $result = mysqli_query($conn, $query);
 
-// 3. HITUNG STATISTIK (OPSIONAL AGAR DASHBOARD HIDUP)
-$count_today = mysqli_num_rows(mysqli_query($conn, "SELECT id_jadwal FROM jadwal WHERE id_fotografer = '$id_foto' AND tanggal = CURDATE()"));
-$count_done = mysqli_num_rows(mysqli_query($conn, "SELECT id_jadwal FROM jadwal WHERE id_fotografer = '$id_foto' AND status = 'selesai'"));
+// 3. HITUNG STATISTIK OPTIMAL (Tanpa hit query ulang ke database, menghemat resource)
+$count_today = 0;
+$count_done = 0;
+$total_project = mysqli_num_rows($result);
+
+if ($total_project > 0) {
+    while ($row_stat = mysqli_fetch_assoc($result)) {
+        if ($row_stat['tanggal'] == date('Y-m-d')) {
+            $count_today++;
+        }
+        if ($row_stat['status'] == 'selesai') {
+            $count_done++;
+        }
+    }
+    // Kembalikan pointer internal database ke baris pertama agar data tabel di bawah bisa di-render ulang
+    mysqli_data_seek($result, 0);
+}
 ?>
 
 <!DOCTYPE html>
@@ -67,26 +81,26 @@ $count_done = mysqli_num_rows(mysqli_query($conn, "SELECT id_jadwal FROM jadwal 
             </div>
             <div class="bg-[#1c1b1b] border border-white/5 p-6 rounded-sm">
                 <p class="text-[9px] uppercase tracking-widest text-gray-500 font-bold mb-2">Total Project</p>
-                <h3 class="text-3xl font-headline"><?= mysqli_num_rows($result) ?></h3>
+                <h3 class="text-3xl font-headline"><?= str_pad($total_project, 2, '0', STR_PAD_LEFT) ?></h3>
             </div>
             <div class="bg-[#1c1b1b] border border-white/5 p-6 rounded-sm">
                 <p class="text-[9px] uppercase tracking-widest text-gray-500 font-bold mb-2">Completed</p>
-                <h3 class="text-3xl font-headline"><?= $count_done ?></h3>
+                <h3 class="text-3xl font-headline"><?= str_pad($count_done, 2, '0', STR_PAD_LEFT) ?></h3>
             </div>
             <div class="bg-[#1c1b1b] border border-white/5 p-6 rounded-sm">
                 <p class="text-[9px] uppercase tracking-widest text-gray-500 font-bold mb-2">Status</p>
-                <h3 class="text-xl font-headline text-primary">Active</h3>
+                <h3 class="text-xl font-headline text-primary tracking-wide uppercase text-sm font-bold mt-1">● Active</h3>
             </div>
         </div>
 
         <div class="bg-[#1c1b1b] border border-white/5 rounded-sm overflow-hidden">
             <div class="p-6 border-b border-white/5 flex justify-between items-center">
                 <h4 class="font-headline text-lg">Upcoming Schedule</h4>
-                <span class="text-[10px] text-gray-500 uppercase">Sorted by Date</span>
+                <span class="text-[10px] text-gray-500 uppercase tracking-wider">Sorted by Date</span>
             </div>
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="border-b border-white/10 text-[10px] uppercase tracking-widest text-gray-400">
+                    <tr class="border-b border-white/10 text-[10px] uppercase tracking-widest text-gray-400 bg-white/[0.01]">
                         <th class="p-6">Waktu & Tanggal</th>
                         <th class="p-6">Pelanggan</th>
                         <th class="p-6">Paket & Lokasi</th>
@@ -94,45 +108,56 @@ $count_done = mysqli_num_rows(mysqli_query($conn, "SELECT id_jadwal FROM jadwal 
                         <th class="p-6 text-right">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="text-sm text-white">
-                    <?php if (mysqli_num_rows($result) > 0): ?>
+                <tbody class="text-sm text-white divide-y divide-white/5">
+                    <?php if ($total_project > 0): ?>
                         <?php while($row = mysqli_fetch_assoc($result)): ?>
-                        <tr class="border-b border-white/5 hover:bg-white/[0.02] transition-all group">
+                        <tr class="hover:bg-white/[0.01] transition-all group">
                             <td class="p-6">
                                 <div class="font-bold text-white"><?= date('d M Y', strtotime($row['tanggal'])) ?></div>
-                                <div class="text-[10px] text-gray-500 uppercase tracking-tighter"><?= $row['jam'] ?> WIB</div>
+                                <div class="text-[10px] text-gray-500 uppercase tracking-tighter mt-1"><?= date('H:i', strtotime($row['jam'])) ?> WIB</div>
                             </td>
                             <td class="p-6">
-                                <span class="font-medium"><?= $row['nama_pelanggan'] ?></span>
+                                <span class="font-medium text-gray-200"><?= $row['nama_pelanggan'] ?></span>
                             </td>
                             <td class="p-6">
-                                <div class="text-primary font-semibold"><?= $row['nama_paket'] ?></div>
-                                <div class="text-[10px] text-gray-500 italic"><?= $row['lokasi'] ?></div>
+                                <div class="text-primary font-semibold text-sm"><?= $row['nama_paket'] ?></div>
+                                <div class="text-[10px] text-gray-500 italic mt-0.5"><?= $row['lokasi'] ?></div>
                             </td>
                             <td class="p-6 text-center">
-                                <?php if($row['status'] == 'selesai'): ?>
-                                    <span class="inline-block px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-[9px] font-bold uppercase tracking-widest">Selesai</span>
+                                <?php if(strtolower($row['status']) == 'selesai'): ?>
+                                    <span class="inline-block px-3 py-1 bg-green-500/10 text-green-400 border border-green-500/20 text-[9px] font-bold uppercase tracking-widest rounded-sm">Selesai</span>
+                                <?php elseif(strtolower($row['status']) == 'batal'): ?>
+                                    <span class="inline-block px-3 py-1 bg-red-500/10 text-red-400 border border-red-500/20 text-[9px] font-bold uppercase tracking-widest rounded-sm">Batal</span>
                                 <?php else: ?>
-                                    <span class="inline-block px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-500 text-[9px] font-bold uppercase tracking-widest">Terjadwal</span>
+                                    <span class="inline-block px-3 py-1 bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 text-[9px] font-bold uppercase tracking-widest rounded-sm">Terjadwal</span>
                                 <?php endif; ?>
                             </td>
                             <td class="p-6 text-right">
-                                <?php if($row['status'] == 'terjadwal'): ?>
-                                    <a href="proses_update.php?id_jadwal=<?= $row['id_jadwal'] ?>&status=selesai" 
-                                       onclick="return confirm('Tandai sesi foto ini sudah selesai?')"
-                                       class="inline-block bg-primary text-black px-4 py-2 text-[10px] font-bold uppercase tracking-widest hover:brightness-110 transition-all">
-                                       Done Shoot
-                                    </a>
-                                <?php else: ?>
-                                    <span class="material-symbols-outlined text-green-500 opacity-50">task_alt</span>
-                                <?php endif; ?>
+                                <div class="flex items-center justify-end gap-2">
+                                    <?php if(strtolower($row['status']) == 'terjadwal'): ?>
+                                        <a href="proses_update.php?id_jadwal=<?= $row['id_jadwal'] ?>&status=selesai" 
+                                           onclick="return confirm('Tandai sesi foto ini sudah selesai?')"
+                                           class="inline-block bg-primary text-black px-4 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-white transition-all rounded-sm"
+                                           title="Selesaikan Sesi">
+                                            Done Shoot
+                                        </a>
+                                        <a href="proses_update.php?id_jadwal=<?= $row['id_jadwal'] ?>&status=batal" 
+                                           onclick="return confirm('Apakah Anda yakin ingin membatalkan jadwal ini?')"
+                                           class="inline-block bg-red-500/10 text-red-400 border border-red-500/20 px-3 py-2 text-[10px] font-bold uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all rounded-sm"
+                                           title="Batalkan Jadwal">
+                                            Cancel
+                                        </a>
+                                    <?php else: ?>
+                                        <span class="material-symbols-outlined text-gray-600 select-none text-md">done_all</span>
+                                    <?php endif; ?>
+                                </div>
                             </td>
                         </tr>
                         <?php endwhile; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="5" class="p-12 text-center text-gray-500 italic tracking-widest text-xs">
-                                No production schedule found for your account.
+                            <td colspan="5" class="p-16 text-center text-gray-600 italic tracking-widest text-xs uppercase">
+                                No production schedule found for your artist account.
                             </td>
                         </tr>
                     <?php endif; ?>

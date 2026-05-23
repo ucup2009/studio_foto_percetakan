@@ -81,6 +81,7 @@ if (isset($_GET['hapus'])) {
                             <tr class="border-b border-outline-variant/10">
                                 <th class="pb-6 font-label text-[10px] tracking-[0.2em] text-on-surface-variant/50 uppercase">User Info</th>
                                 <th class="pb-6 font-label text-[10px] tracking-[0.2em] text-on-surface-variant/50 uppercase">Email Address</th>
+                                <th class="pb-6 font-label text-[10px] tracking-[0.2em] text-on-surface-variant/50 uppercase">Telpon</th>
                                 <th class="pb-6 font-label text-[10px] tracking-[0.2em] text-on-surface-variant/50 uppercase">Role</th>
                                 <th class="pb-6 font-label text-[10px] tracking-[0.2em] text-on-surface-variant/50 uppercase text-right">Actions</th>
                             </tr>
@@ -95,6 +96,7 @@ if (isset($_GET['hapus'])) {
                                     // PERBAIKAN: Cek apakah key 'email' ada, jika tidak gunakan placeholder
                                     // Ganti 'email' dengan nama kolom yang benar di database Anda jika berbeda
                                     $email_display = isset($row['email']) ? $row['email'] : '<span class="text-red-400/50 italic">Column Error</span>';
+                                    $no_hp_display = isset($row['no_hp']) ? $row['no_hp'] : '<span class="text-red-400/50 italic">Column Error</span>';
                             ?>
                             <tr class="group hover:bg-surface-container/30 transition-colors">
                                 <td class="py-6">
@@ -110,6 +112,9 @@ if (isset($_GET['hapus'])) {
                                 </td>
                                 <td class="py-6 text-on-surface-variant text-sm">
                                     <?= $email_display ?>
+                                </td>
+                                <td class="py-6 text-on-surface-variant text-sm">
+                                    <?= $no_hp_display ?>
                                 </td>
                                 <td class="py-6">
                                     <span class="px-2 py-1 <?= $row['role'] == 'admin' ? 'bg-primary/20 text-primary' : 'bg-white/5 text-on-surface-variant' ?> text-[10px] font-bold tracking-widest uppercase rounded-sm">

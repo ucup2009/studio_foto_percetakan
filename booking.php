@@ -12,12 +12,11 @@ $notif = "";
 
 // Fungsi Helper untuk Kirim API WhatsApp
 function kirimWhatsApp($target, $pesan) {
-    
     $token = "CxQ7iSS8Bep55J3yFfL7"; 
 
     $curl = curl_init();
     curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://api.fonnte.com/send',
+        CURL_URL => 'https://api.fonnte.com/send',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => '',
         CURLOPT_MAXREDIRS => 10,
@@ -41,54 +40,77 @@ function kirimWhatsApp($target, $pesan) {
 }
 
 // 2. Logika Simpan Data
+// 2. Logika Simpan Data
+// 2. Logika Simpan Data
+// 2. Logika Simpan Data
+// 2. Logika Simpan Data
+// 2. Logika Simpan Data
+// 2. Logika Simpan Data
 if (isset($_POST['submit_booking'])) {
     $id_user = $_SESSION['id_user']; 
     $id_paket = mysqli_real_escape_string($conn, $_POST['id_paket']);
+    
+    // Sekarang ini sudah berisi id_fotografer asli yang valid dari form HTML
+    $id_fotografer = mysqli_real_escape_string($conn, $_POST['id_fotografer']); 
+    
     $tanggal = mysqli_real_escape_string($conn, $_POST['tanggal']);
     $jam = mysqli_real_escape_string($conn, $_POST['jam']);
     $lokasi = mysqli_real_escape_string($conn, $_POST['lokasi']);
     $catatan = mysqli_real_escape_string($conn, $_POST['catatan']);
-    $status = "Menunggu"; 
+    
+    // Status ENUM yang sudah diselaraskan dengan database Anda
+    $status_booking = "menunggu";  // Sesuai enum tabel booking
+    $status_jadwal  = "terjadwal"; // Sesuai enum('terjadwal','selesai') di tabel jadwal
 
     // Ambil data nama paket untuk isi pesan WA
     $query_nama_paket = mysqli_query($conn, "SELECT nama_paket FROM paket WHERE id_paket = '$id_paket'");
     $data_paket = mysqli_fetch_assoc($query_nama_paket);
     $nama_paket = ucwords($data_paket['nama_paket'] ?? 'Paket Pilihan');
 
-    $sql = "INSERT INTO booking (id_user, id_paket, lokasi, tanggal, jam, catatan, status) 
-            VALUES ('$id_user', '$id_paket', '$lokasi', '$tanggal', '$jam', '$catatan', '$status')";
+    // Ambil data nama fotografer untuk isi pesan WA (Mencari lewat relasi tabel fotografer)
+    $query_nama_foto = mysqli_query($conn, "SELECT u.nama FROM fotografer f JOIN users u ON f.id_user = u.id_user WHERE f.id_fotografer = '$id_fotografer'");
+    $data_foto = mysqli_fetch_assoc($query_nama_foto);
+    $nama_fotografer = ucwords($data_foto['nama'] ?? 'Fotografer');
+
+    // 1. Masukkan data ke tabel booking (id_fotografer tidak akan NULL lagi)
+    $sql = "INSERT INTO booking (id_user, id_paket, id_fotografer, lokasi, tanggal, jam, catatan, status) 
+            VALUES ('$id_user', '$id_paket', '$id_fotografer', '$lokasi', '$tanggal', '$jam', '$catatan', '$status_booking')";
     
     if (mysqli_query($conn, $sql)) {
+        // 2. Ambil id_booking yang baru saja digenerate oleh sistem
+        $id_booking_baru = mysqli_insert_id($conn);
+
+        // 3. Masukkan ke tabel jadwal (Aman dari Foreign Key Constraint)
+        $sql_jadwal = "INSERT INTO jadwal (id_booking, id_fotografer, tanggal, jam, status) 
+                       VALUES ('$id_booking_baru', '$id_fotografer', '$tanggal', '$jam', '$status_jadwal')";
+        
+        mysqli_query($conn, $sql_jadwal);
+
         $notif = "success";
 
         // --- SISTEM OTOMATISASI WHATSAPP ---
-        
-        // 1. Ambil nomor HP & Nama pelanggan dari sesi login atau database user
-        // Pastikan format nomor di database aman (contoh: 08123xxx atau 628123xxx)
         $nama_pelanggan = $_SESSION['nama'] ?? 'Pelanggan';
-        $no_hp_pelanggan = $_SESSION['no_hp'] ?? ''; // Sesuaikan key session No HP di sistem Anda
+        $no_hp_pelanggan = $_SESSION['no_hp'] ?? ''; 
 
-        // 2. Format teks template pesan profesional ala OPPASTUDIO
         $format_tanggal = date('d M Y', strtotime($tanggal));
         $pesan_wa = "*OPPASTUDIO | Booking Confirmation*\n\n";
-        $pesan_wa .= "Halo, *{$nama_pelanggan}*.\n\n";
-        $pesan_wa .= "Terima kasih telah mempercayakan momen berharga Anda kepada kami. Reservasi sesi foto Anda telah berhasil direkam ke dalam sistem dengan rincian berikut:\n\n";
+        $pesan_wa .= "Halo Pelanggan atas Nama, *{$nama_pelanggan}*.\n\n";
+        $pesan_wa .= "Terima kasih telah mempercayakan momen berharga Anda kepada kami. Reservasi sesi foto Anda telah berhasil direkam dengan rincian berikut:\n\n";
         $pesan_wa .= "▪️ *Paket:* {$nama_paket}\n";
+        $pesan_wa .= "▪️ *Visual Artist:* {$nama_fotografer}\n";
         $pesan_wa .= "▪️ *Tanggal:* {$format_tanggal}\n";
-        $pesan_wa .= "▪️ *Waktu:* {$jam} WIB\n";
+        $pesan_wa .= "▪️ *Waktu:* {$jam} WITA\n";
         $pesan_wa .= "▪️ *Lokasi:* {$lokasi}\n";
-        $pesan_wa .= "▪️ *Status:* Menunggu Konfirmasi\n\n";
-        $pesan_wa .= "Kurator dan tim administrasi kami akan segera meninjau jadwal Anda serta menghubungi Anda kembali untuk detail persiapan teknis pemotretan.\n\n";
-        $pesan_wa .= "_Pesan ini dikirimkan secara otomatis oleh sistem OPPASTUDIO Management Suite._";
+        $pesan_wa .= "▪️ *Status:* Terjadwal\n\n";
+        $pesan_wa .= "_Pesan ini dikirimkan secara otomatis oleh sistem OPPASTUDIO Suite._";
 
-        // 3. Eksekusi pengiriman via API gateway jika nomor handphone tersedia
         if (!empty($no_hp_pelanggan)) {
             kirimWhatsApp($no_hp_pelanggan, $pesan_wa);
         }
     } else {
         $notif = "error";
     }
-}
+} 
 ?>
 
 <!DOCTYPE html>
@@ -138,7 +160,6 @@ if (isset($_POST['submit_booking'])) {
         ::-webkit-scrollbar-thumb:hover { background: #e9c176; }
         input[type="date"]::-webkit-calendar-picker-indicator,
         input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(0.8); cursor: pointer; }
-        /* Styling dropdown Google Autocomplete agar menyatu dengan Dark UI */
         .pac-container { 
             background-color: #1c1b1b; 
             border: 1px solid #4e4639; 
@@ -206,6 +227,7 @@ if (isset($_POST['submit_booking'])) {
                 <?php endif; ?>
 
                 <form method="POST" action="" class="space-y-8 relative z-10">
+                    
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="space-y-2">
                             <label class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase font-bold">Pilih Paket</label>
@@ -221,15 +243,34 @@ if (isset($_POST['submit_booking'])) {
                             </select>
                         </div>
 
-                        <div class="space-y-2 flex flex-col justify-between">
-                            <div>
-                                <label class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase font-bold">Lokasi Pemotretan</label>
-                                <input type="text" id="cari-lokasi" name="lokasi" placeholder="KETIK ALAMAT ATAU PILIH TITIK DI PETA..." required
-                                    class="w-full bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary/50 transition-all p-4 text-on-surface placeholder:text-outline-variant/30 text-sm" />
-                            </div>
-                            
-                            <div id="map" class="w-full h-44 bg-surface-container-lowest mt-2 border border-white/5 rounded-sm overflow-hidden"></div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-400 mb-2">Pilih Fotografer / Visual Artist</label>
+                            <select name="id_fotografer" required class="w-full bg-[#1c1b1b] border border-white/10 p-3 text-sm rounded-sm text-white focus:ring-1 focus:ring-[#e9c176] outline-none">
+                                <option value="">-- Pilih Fotografer --</option>
+                                <?php
+                                // Mengambil data fotografer dengan validasi role 'fotografer' dari tabel users
+                                $query_select_foto = mysqli_query($conn, "SELECT f.id_fotografer, u.nama 
+                                                                        FROM fotografer f 
+                                                                        JOIN users u ON f.id_user = u.id_user 
+                                                                        WHERE u.role = 'fotografer'");
+                                
+                                if (mysqli_num_rows($query_select_foto) > 0) {
+                                    while ($foto = mysqli_fetch_assoc($query_select_foto)) {
+                                        echo "<option value='".$foto['id_fotografer']."'>".ucwords($foto['nama'])."</option>";
+                                    }
+                                } else {
+                                    echo "<option value='' disabled>Belum ada fotografer terdaftar di database</option>";
+                                }
+                                ?>
+                            </select>
                         </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase font-bold">Lokasi Pemotretan</label>
+                        <input type="text" id="cari-lokasi" name="lokasi" placeholder="KETIK ALAMAT ATAU PILIH TITIK DI PETA..." required
+                            class="w-full bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary/50 transition-all p-4 text-on-surface placeholder:text-outline-variant/30 text-sm" />
+                        <div id="map" class="w-full h-44 bg-surface-container-lowest mt-2 border border-white/5 rounded-sm overflow-hidden"></div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -330,17 +371,14 @@ if (isset($_POST['submit_booking'])) {
     </script>
     <script>
 function initMap() {
-    // Tentukan titik koordinat pusat awal saat peta dimuat (Contoh: Jakarta)
     const defaultCoords = { lat: -6.2088, lng: 106.8456 }; 
     
-    // Inisialisasi Peta
     const map = new google.maps.Map(document.getElementById("map"), {
         center: defaultCoords,
         zoom: 13,
-        disableDefaultUI: true, // Menyembunyikan tombol UI default agar minimalis
+        disableDefaultUI: true, 
         zoomControl: true,
         styles: [
-            // Kustomisasi palet warna peta tema gelap
             { "elementType": "geometry", "stylers": [{ "color": "#1c1b1b" }] },
             { "elementType": "labels.text.stroke", "stylers": [{ "color": "#131313" }] },
             { "elementType": "labels.text.fill", "stylers": [{ "color": "#e5e2e1" }] },
@@ -349,19 +387,15 @@ function initMap() {
         ]
     });
 
-    // Membuat penanda/pin di peta yang dapat digeser manual
     const marker = new google.maps.Marker({
         position: defaultCoords,
         map: map,
         draggable: true
     });
 
-    // Menghubungkan kolom input text pencarian dengan library Autocomplete Google Places
     const input = document.getElementById("cari-lokasi");
-    const autocomplete = new google.maps.places.Autocomplete(input);
     autocomplete.bindTo("bounds", map);
 
-    // Kejadian saat pelanggan memilih salah satu saran alamat dari Google
     autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
         if (!place.geometry || !place.geometry.location) return;
@@ -373,13 +407,11 @@ function initMap() {
             map.setZoom(17);
         }
         marker.setPosition(place.geometry.location);
-        input.value = place.formatted_address; // Isi input teks dengan alamat lengkap terformat
+        input.value = place.formatted_address; 
     });
 
-    // Kejadian saat pelanggan menggeser pin merah secara manual di peta
     marker.addListener("dragend", () => {
         const position = marker.getPosition();
-        // Memasukkan nilai koordinat Latitude & Longitude ke dalam kolom input teks agar tersimpan di database
         input.value = position.lat() + ", " + position.lng();
     });
 }
