@@ -91,7 +91,7 @@
                 <div class="md:col-span-5 space-y-8">
                     <div>
                         <span class="font-label text-primary tracking-[0.3em] uppercase text-[10px] mb-4 block">Our Story</span>
-                        <h2 class="font-headline text-4xl md:text-5xl text-on-surface leading-tight">Yusuf's Vision: <br/>Local Excellence in Ende</h2>
+                        <h2 class="font-headline text-4xl md:text-5xl text-on-surface leading-tight">Visi : <br/>Keunggulan Lokal di Manggarai</h2>
                     </div>
                     <p class="text-on-surface-variant font-body text-lg leading-relaxed">
                         Berakar di jantung Reo, Oppastudio didirikan oleh Yusuf dengan misi tunggal: untuk mengangkat penceritaan regional melalui citra sinematik. Kami tidak hanya mengambil foto; kami mendokumentasikan jiwa komunitas kami.
@@ -107,7 +107,7 @@
                          alt="Photography studio interior" 
                          class="w-full h-full object-cover grayscale opacity-80 border border-white/5" />
                     <div class="absolute -bottom-8 -left-8 bg-surface-container-lowest p-10 max-w-xs hidden lg:block border-l-4 border-primary shadow-2xl">
-                        <p class="font-headline italic text-on-surface text-xl leading-relaxed">"Every frame is a legacy waiting to be told."</p>
+                        <p class="font-headline italic text-on-surface text-xl leading-relaxed">"Setiap bingkai adalah warisan yang menunggu untuk diceritakan."</p>
                     </div>
                 </div>
             </div>
@@ -116,8 +116,8 @@
         <section class="py-32 px-8 md:px-12 bg-[#0d0d0d] overflow-hidden min-h-screen flex flex-col justify-center relative">
     
             <div class="max-w-7xl mx-auto mb-12 text-center relative z-20">
-                <span class="font-label text-[#e9c176] tracking-[0.3em] uppercase text-[10px] mb-4 block">Curated Works</span>
-                <h2 class="font-headline text-4xl md:text-5xl text-white font-light">The Featured Gallery</h2>
+                <span class="font-label text-[#e9c176] tracking-[0.3em] uppercase text-[10px] mb-4 block">Karya yang Dikurasi</span>
+                <h2 class="font-headline text-4xl md:text-5xl text-white font-light">Galeri Unggulan</h2>
                 <p class="text-[11px] text-zinc-500 uppercase tracking-widest mt-2 font-mono">Klik Tombol Kontrol untuk Memutar Koleksi</p>
             </div>
 
@@ -182,7 +182,7 @@
             <div class="max-w-4xl mx-auto bg-surface-container-lowest border border-white/5 p-12 md:p-24 text-center shadow-2xl">
                 <h2 class="font-headline text-4xl md:text-5xl text-on-surface mb-8 leading-tight">Siap untuk menentukan <br>warisan visual Anda? </h2>
                 <p class="text-on-surface-variant font-body text-lg mb-12 max-w-2xl mx-auto">
-                    Explore our tailored photography packages designed for every significant milestone. From intimate portraits to grand celebrations.
+                    Jelajahi paket fotografi khusus kami yang dirancang untuk setiap momen penting. Dari potret intim hingga perayaan besar.
                 </p>
                 <a href="#" class="inline-block bg-primary text-on-primary px-12 py-5 rounded-sm font-label text-[10px] tracking-[0.3em] uppercase transition-all duration-500 hover:scale-105 hover:bg-primary-container">
                     Explore Packages
