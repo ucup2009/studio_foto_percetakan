@@ -40,6 +40,10 @@ function kirimWhatsApp($target, $pesan) {
 }
 
 // 2. Logika Simpan Data
+<<<<<<< HEAD
+=======
+// 2. Logika Simpan Data
+>>>>>>> 2ef34316cdfbd3f86a270b6aed0ebcb21410a1e9
 if (isset($_POST['submit_booking'])) {
     $id_user = $_SESSION['id_user']; 
     
@@ -55,6 +59,7 @@ if (isset($_POST['submit_booking'])) {
     $status_booking = "menunggu";  // Sesuai enum tabel booking
     $status_jadwal  = "terjadwal"; // Sesuai enum('terjadwal','selesai') di tabel jadwal
 
+<<<<<<< HEAD
     // Validasi Sisi Server Tambahan (Double Check untuk Batasan 2 Jadwal Per Hari)
     $cek_kuota = mysqli_query($conn, "SELECT COUNT(*) as total FROM booking WHERE tanggal = '$tanggal' AND status != 'batal'");
     $data_kuota = mysqli_fetch_assoc($cek_kuota);
@@ -110,6 +115,55 @@ if (isset($_POST['submit_booking'])) {
         } else {
             $notif = "error";
         }
+=======
+    // Ambil data nama paket untuk isi pesan WA
+    $query_nama_paket = mysqli_query($conn, "SELECT nama_paket FROM paket WHERE id_paket = '$id_paket'");
+    $data_paket = mysqli_fetch_assoc($query_nama_paket);
+    $nama_paket = ucwords($data_paket['nama_paket'] ?? 'Paket Pilihan');
+
+    // Ambil data nama fotografer untuk isi pesan WA (Mencari lewat relasi tabel fotografer)
+    $query_nama_foto = mysqli_query($conn, "SELECT u.nama FROM fotografer f JOIN users u ON f.id_user = u.id_user WHERE f.id_fotografer = '$id_fotografer'");
+    $data_foto = mysqli_fetch_assoc($query_nama_foto);
+    $nama_fotografer = ucwords($data_foto['nama'] ?? 'Fotografer');
+
+    // 1. Masukkan data ke tabel booking
+    $sql = "INSERT INTO booking (id_user, id_paket, id_fotografer, lokasi, tanggal, jam, catatan, status) 
+            VALUES ('$id_user', '$id_paket', '$id_fotografer', '$lokasi', '$tanggal', '$jam', '$catatan', '$status_booking')";
+    
+    if (mysqli_query($conn, $sql)) {
+        // 2. Ambil id_booking yang baru saja digenerate oleh sistem
+        $id_booking_baru = mysqli_insert_id($conn);
+
+        // 3. Masukkan ke tabel jadwal
+        $sql_jadwal = "INSERT INTO jadwal (id_booking, id_fotografer, tanggal, jam, status) 
+                       VALUES ('$id_booking_baru', '$id_fotografer', '$tanggal', '$jam', '$status_jadwal')";
+        
+        mysqli_query($conn, $sql_jadwal);
+
+        $notif = "success";
+
+        // --- SISTEM OTOMATISASI WHATSAPP ---
+        $nama_pelanggan = $_SESSION['nama'] ?? 'Pelanggan';
+        $no_hp_pelanggan = $_SESSION['no_hp'] ?? ''; 
+
+        $format_tanggal = date('d M Y', strtotime($tanggal));
+        $pesan_wa = "*OPPASTUDIO | Booking Confirmation*\n\n";
+        $pesan_wa .= "Halo Pelanggan atas Nama, *{$nama_pelanggan}*.\n\n";
+        $pesan_wa .= "Terima kasih telah mempercayakan momen berharga Anda kepada kami. Reservasi sesi foto Anda telah berhasil direkam dengan rincian berikut:\n\n";
+        $pesan_wa .= "▪️ *Paket:* {$nama_paket}\n";
+        $pesan_wa .= "▪️ *Visual Artist:* {$nama_fotografer}\n";
+        $pesan_wa .= "▪️ *Tanggal:* {$format_tanggal}\n";
+        $pesan_wa .= "▪️ *Waktu:* {$jam} WITA\n";
+        $pesan_wa .= "▪️ *Lokasi:* {$lokasi}\n";
+        $pesan_wa .= "▪️ *Status:* Terjadwal\n\n";
+        $pesan_wa .= "_Pesan ini dikirimkan secara otomatis oleh sistem OPPASTUDIO Suite._";
+
+        if (!empty($no_hp_pelanggan)) {
+            kirimWhatsApp($no_hp_pelanggan, $pesan_wa);
+        }
+    } else {
+        $notif = "error";
+>>>>>>> 2ef34316cdfbd3f86a270b6aed0ebcb21410a1e9
     }
 } 
 ?>
@@ -123,6 +177,7 @@ if (isset($_POST['submit_booking'])) {
     
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Inter:wght@400;500&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+<<<<<<< HEAD
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet" />
@@ -134,6 +189,10 @@ if (isset($_POST['submit_booking'])) {
     
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
 
+=======
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+>>>>>>> 2ef34316cdfbd3f86a270b6aed0ebcb21410a1e9
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -187,6 +246,7 @@ if (isset($_POST['submit_booking'])) {
         .pac-item-query { 
             color: #e9c176; 
         }
+<<<<<<< HEAD
 
         /* Desain Kustomisasi Tema Gelap FullCalendar agar Menyatu Sempurna dengan Website */
         .fc { background: #0e0e0e; border: 1px solid #4e4639; border-radius: 4px; padding: 12px; font-family: 'Inter', sans-serif; }
@@ -200,6 +260,8 @@ if (isset($_POST['submit_booking'])) {
         .fc-day-today { background: rgba(233, 193, 118, 0.05) !important; }
         .fc-daygrid-bg-harness { cursor: not-allowed; }
         .fc-highlight { background: rgba(233, 193, 118, 0.25) !important; }
+=======
+>>>>>>> 2ef34316cdfbd3f86a270b6aed0ebcb21410a1e9
     </style>
 </head>
 
@@ -243,10 +305,13 @@ if (isset($_POST['submit_booking'])) {
                     <div class="bg-primary/20 border border-primary text-primary p-4 mb-6 text-sm relative z-20">
                         Booking berhasil dikirim! Rincian pesanan telah dikirimkan ke nomor WhatsApp Anda. Kurator kami akan segera menghubungi Anda.
                     </div>
+<<<<<<< HEAD
                 <?php elseif($notif == "penuh"): ?>
                     <div class="bg-red-500/20 border border-red-500 text-red-200 p-4 mb-6 text-sm relative z-20">
                         Maaf, tanggal yang Anda pilih baru saja penuh. Silakan tentukan tanggal pendaftaran lainnya pada kalender di bawah.
                     </div>
+=======
+>>>>>>> 2ef34316cdfbd3f86a270b6aed0ebcb21410a1e9
                 <?php elseif($notif == "error"): ?>
                     <div class="bg-red-500/20 border border-red-500 text-red-200 p-4 mb-6 text-sm relative z-20">
                         Terjadi kesalahan saat menyimpan data. Silakan coba lagi.
@@ -300,6 +365,7 @@ if (isset($_POST['submit_booking'])) {
                         <div id="map" class="w-full h-44 bg-surface-container-lowest mt-2 border border-white/5 rounded-sm overflow-hidden"></div>
                     </div>
 
+<<<<<<< HEAD
                     <div class="space-y-2">
                         <label class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase font-bold">Pilih Tanggal Sesi Foto</label>
                         <div id="kalender-booking" class="w-full"></div>
@@ -309,6 +375,14 @@ if (isset($_POST['submit_booking'])) {
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div class="space-y-2 md:col-span-2">
+=======
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase font-bold">Tanggal</label>
+                            <input type="date" name="tanggal" required class="w-full bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary/50 transition-all p-4 text-on-surface text-sm" />
+                        </div>
+                        <div class="space-y-2">
+>>>>>>> 2ef34316cdfbd3f86a270b6aed0ebcb21410a1e9
                             <label class="font-label text-[10px] tracking-widest text-on-surface-variant uppercase font-bold">Waktu/Jam</label>
                             <input type="time" name="jam" required class="w-full bg-surface-container-lowest border-none focus:ring-1 focus:ring-primary/50 transition-all p-4 text-on-surface text-sm" />
                         </div>
@@ -389,6 +463,7 @@ if (isset($_POST['submit_booking'])) {
     </footer>
 
     <script>
+<<<<<<< HEAD
         document.addEventListener('DOMContentLoaded', function() {
             const calendarEl = document.getElementById('kalender-booking');
             const hiddenInputTanggal = document.getElementById('tanggal');
@@ -437,6 +512,8 @@ if (isset($_POST['submit_booking'])) {
     </script>
 
     <script>
+=======
+>>>>>>> 2ef34316cdfbd3f86a270b6aed0ebcb21410a1e9
         const menuBtn = document.getElementById('menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
         if (menuBtn && mobileMenu) {
@@ -447,6 +524,7 @@ if (isset($_POST['submit_booking'])) {
             });
         }
     </script>
+<<<<<<< HEAD
 
     <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -547,6 +625,55 @@ if (isset($_POST['submit_booking'])) {
         alert("Tidak dapat mengakses lokasi Anda. Pastikan izin GPS di browser aktif.");
     });
 });
+=======
+    <script>
+    function initMap() {
+        const defaultCoords = { lat: -6.2088, lng: 106.8456 }; 
+        
+        const map = new google.maps.Map(document.getElementById("map"), {
+            center: defaultCoords,
+            zoom: 13,
+            disableDefaultUI: true, 
+            zoomControl: true,
+            styles: [
+                { "elementType": "geometry", "stylers": [{ "color": "#1c1b1b" }] },
+                { "elementType": "labels.text.stroke", "stylers": [{ "color": "#131313" }] },
+                { "elementType": "labels.text.fill", "stylers": [{ "color": "#e5e2e1" }] },
+                { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#353534" }] },
+                { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#0e0e0e" }] }
+            ]
+        });
+
+        const marker = new google.maps.Marker({
+            position: defaultCoords,
+            map: map,
+            draggable: true
+        });
+
+        const input = document.getElementById("cari-lokasi");
+        const autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.bindTo("bounds", map);
+
+        autocomplete.addListener("place_changed", () => {
+            const place = autocomplete.getPlace();
+            if (!place.geometry || !place.geometry.location) return;
+
+            if (place.geometry.viewport) {
+                map.fitBounds(place.geometry.viewport);
+            } else {
+                map.setCenter(place.geometry.location);
+                map.setZoom(17);
+            }
+            marker.setPosition(place.geometry.location);
+            input.value = place.formatted_address; 
+        });
+
+        marker.addListener("dragend", () => {
+            const position = marker.getPosition();
+            input.value = position.lat() + ", " + position.lng();
+        });
+    }
+>>>>>>> 2ef34316cdfbd3f86a270b6aed0ebcb21410a1e9
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initMap" async defer></script>
 </body>

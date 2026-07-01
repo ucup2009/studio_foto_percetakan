@@ -64,7 +64,11 @@
     <main>
         <section class="relative h-screen flex items-center justify-center overflow-hidden">
             <div class="absolute inset-0 z-0">
+<<<<<<< HEAD
                 <img src="asset/b.jpg" 
+=======
+                <img src="asset/foto.jpg" 
+>>>>>>> 2ef34316cdfbd3f86a270b6aed0ebcb21410a1e9
                      alt="Cinematic wedding photography" 
                      class="w-full h-full object-cover grayscale-[0.3] brightness-[0.4]" />
                 <div class="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background"></div>
